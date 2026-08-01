@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BroZone — Barber Szczecin, Stare Miasto | Targ Rybny 4</title>
+<meta name="description" content="BroZone — barber i fryzjer męski na Starym Mieście w Szczecinie. Precyzyjne cięcie, fade, broda z ostrą linią. 4.9★ na Booksy, 146 opinii. Targ Rybny 4.">
+<meta name="theme-color" content="#0b0b0c">
+<link rel="canonical" href="https://brozone.pl/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="BroZone — Barber Szczecin, Stare Miasto">
+<meta property="og:description" content="Precyzyjne cięcie, dopracowany zarost i styl, który trzyma formę. Targ Rybny 4, Szczecin.">
+<meta property="og:image" content="assets/og-cover.jpg">
+<meta property="og:locale" content="pl_PL">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<!-- Animations start hidden only when JS is alive to reveal them again. -->
+<script>document.documentElement.className='js';</script>
+</head>
+<body>
+
+<!-- ============ LOADER ============ -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__word">BROZONE</div>
+  <div class="loader__blade"></div>
+</div>
+
+<a class="skip" href="#main">Przejdź do treści</a>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="#top" class="nav__logo" aria-label="BroZone — strona główna">
+      <!-- Geometryczne przybliżenie znaku BroZone (ligatura O-Z, E z trzech kresek).
+           Podmienić na oryginalny wektor, gdy tylko będzie dostępny. -->
+      <svg class="logo" viewBox="0 0 268 34" role="img" aria-label="BroZone" focusable="false">
+        <g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="butt" stroke-linejoin="round">
+          <!-- B -->
+          <path d="M3 3h12a7 7 0 0 1 0 14H3"/>
+          <path d="M3 17h13a7 7 0 0 1 0 14H3"/>
+          <path d="M3 3v28"/>
+          <!-- R -->
+          <path d="M42 31V3h12a7 7 0 0 1 0 14H42"/>
+          <path d="M53 17l10 14"/>
+          <!-- O-Z-O ligature: one wide capsule cut by the Z diagonal -->
+          <path d="M100 3h58a14 14 0 0 1 0 28h-58a14 14 0 0 1 0-28Z"/>
+          <path d="M104 31 154 3"/>
+          <!-- N -->
+          <path d="M190 31V3l20 28V3"/>
+          <!-- E built from three bars -->
+          <path d="M232 3h33"/>
+          <path d="M232 17h29"/>
+          <path d="M232 31h33"/>
+        </g>
+      </svg>
+      <span class="sr">BroZone</span>
+    </a>
+
+    <nav class="nav__links" aria-label="Nawigacja główna">
+      <a href="#services">Usługi</a>
+      <a href="#team">Zespół</a>
+      <a href="#gallery">Efekty</a>
+      <a href="#reviews">Opinie</a>
+      <a href="#contact">Kontakt</a>
+    </nav>
+
+    <a class="btn btn--sm btn--amber nav__cta" data-booksy href="#" data-magnetic>Umów wizytę</a>
+
+    <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="mobilemenu">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobilemenu" id="mobilemenu" hidden>
+  <a href="#services">Usługi</a>
+  <a href="#team">Zespół</a>
+  <a href="#gallery">Efekty</a>
+  <a href="#reviews">Opinie</a>
+  <a href="#contact">Kontakt</a>
+  <a class="btn btn--amber" data-booksy href="#">Umów wizytę na Booksy</a>
+</div>
+
+<main id="main">
+<span id="top"></span>
+
+<!-- ============ 1. HERO ============ -->
+<section class="hero" id="hero">
+  <div class="hero__media" data-parallax-media>
+    <!-- ASSET SLOT: hero-video -->
+    <video class="hero__video" autoplay muted loop playsinline preload="metadata"
+           poster="assets/hero-poster.jpg" data-slot="hero-video">
+      <source src="assets/hero-video.mp4" type="video/mp4">
+      <source src="assets/hero-video.webm" type="video/webm">
+    </video>
+    <div class="hero__scrim"></div>
+    <div class="grain" aria-hidden="true"></div>
+  </div>
+
+  <div class="hero__content">
+    <p class="hero__eyebrow reveal">Barber / Fryzjer Męski — Stare Miasto, Szczecin</p>
+
+    <h1 class="hero__title" data-split>BROZONE</h1>
+
+    <p class="hero__sub reveal" data-delay="120">
+      Precyzyjne cięcie, dopracowany zarost i styl, który trzyma formę.
+    </p>
+
+    <div class="hero__actions reveal" data-delay="220">
+      <a class="btn btn--amber btn--lg" data-booksy href="#" data-magnetic>Umów wizytę</a>
+      <a class="btn btn--ghost btn--lg" href="#services">Zobacz usługi</a>
+    </div>
+
+    <ul class="trust" aria-label="Zaufanie">
+      <li class="trust__item" data-stagger><strong>4.9 ★</strong> Booksy</li>
+      <li class="trust__item" data-stagger>146 opinii</li>
+      <li class="trust__item" data-stagger>Targ Rybny 4</li>
+    </ul>
+  </div>
+
+  <a class="scrollcue" href="#process" aria-label="Przewiń dalej">
+    <span class="scrollcue__line"></span>
+    <span class="scrollcue__txt">scroll</span>
+  </a>
+</section>
+
+<!-- ============ 2. PROCESS (sticky scroll) ============ -->
+<section class="process" id="process" aria-label="Jak pracujemy">
+  <div class="process__track" id="processTrack">
+    <div class="process__sticky">
+
+      <div class="process__left">
+        <p class="sec__label">Proces</p>
+        <div class="process__steps">
+          <div class="process__step is-active" data-step="0">
+            <span class="process__num">01</span>
+            <h2 class="process__h">Konsultacja</h2>
+            <p class="process__p">Dobieramy cięcie do Twojego stylu, typu włosa i kształtu twarzy.</p>
+          </div>
+          <div class="process__step" data-step="1">
+            <span class="process__num">02</span>
+            <h2 class="process__h">Cięcie</h2>
+            <p class="process__p">Fade, klasyka albo mocna zmiana. Maszynka, nożyce, brzytwa.</p>
+          </div>
+          <div class="process__step" data-step="2">
+            <span class="process__num">03</span>
+            <h2 class="process__h">Broda</h2>
+            <p class="process__p">Broda z ostrą linią, gorący ręcznik i pielęgnacja.</p>
+          </div>
+          <div class="process__step" data-step="3">
+            <span class="process__num">04</span>
+            <h2 class="process__h">Finish</h2>
+            <p class="process__p">Stylizacja gotowa na wyjście. Wychodzisz i to widać.</p>
+          </div>
+        </div>
+        <div class="process__bar"><i id="processBar"></i></div>
+      </div>
+
+      <div class="process__right" id="processCards">
+        <article class="pcard" data-card="0">
+          <div class="slot" data-label="consultation-01">
+            <img src="assets/consultation-01.jpg" alt="Barber omawia fryzurę z klientem" loading="lazy" decoding="async">
+          </div>
+          <div class="pcard__tag">Konsultacja</div>
+        </article>
+        <article class="pcard" data-card="1">
+          <div class="slot" data-label="fade-closeup">
+            <img src="assets/fade-closeup.jpg" alt="Zbliżenie na fade wykonywany maszynką" loading="lazy" decoding="async">
+          </div>
+          <div class="pcard__tag">Fade</div>
+        </article>
+        <article class="pcard" data-card="2">
+          <div class="slot" data-label="beard-trim">
+            <img src="assets/beard-trim.jpg" alt="Trymowanie brody brzytwą" loading="lazy" decoding="async">
+          </div>
+          <div class="pcard__tag">Broda</div>
+        </article>
+        <article class="pcard" data-card="3">
+          <div class="slot" data-label="finish-style">
+            <img src="assets/finish-style.jpg" alt="Gotowa stylizacja po strzyżeniu" loading="lazy" decoding="async">
+          </div>
+          <div class="pcard__tag">Finish</div>
+        </article>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. SERVICES ============ -->
+<section class="services sec" id="services">
+  <div class="wrap">
+    <header class="sec__head">
+      <p class="sec__label">Usługi</p>
+      <h2 class="sec__title" data-split>Wybierz usługę. Resztą zajmie się barber.</h2>
+    </header>
+
+    <ul class="srv" id="srvList">
+      <li class="srv__row" data-img="assets/service-haircut.jpg" data-slot="service-haircut">
+        <span class="srv__i">01</span>
+        <h3 class="srv__name">Strzyżenie krótkie włosy</h3>
+        <span class="srv__meta">1 h · junior / barber / senior</span>
+        <span class="srv__price">80–100 zł</span>
+        <a class="srv__cta" data-booksy href="#" aria-label="Wybierz strzyżenie w Booksy">Wybierz w Booksy</a>
+      </li>
+      <li class="srv__row" data-img="assets/combo-service.jpg" data-slot="combo-service">
+        <span class="srv__i">02</span>
+        <h3 class="srv__name">Combo włosy + broda</h3>
+        <span class="srv__meta">1 h 30 min · junior / barber / senior</span>
+        <span class="srv__price">120–150 zł</span>
+        <a class="srv__cta" data-booksy href="#" aria-label="Wybierz combo w Booksy">Wybierz w Booksy</a>
+      </li>
+      <li class="srv__row" data-img="assets/service-beard.jpg" data-slot="service-beard">
+        <span class="srv__i">03</span>
+        <h3 class="srv__name">Trymowanie brody</h3>
+        <span class="srv__meta">40 min · junior / barber / senior</span>
+        <span class="srv__price">70–90 zł</span>
+        <a class="srv__cta" data-booksy href="#" aria-label="Wybierz trymowanie brody w Booksy">Wybierz w Booksy</a>
+      </li>
+      <li class="srv__row" data-img="assets/service-color.jpg" data-slot="service-color">
+        <span class="srv__i">04</span>
+        <h3 class="srv__name">Farbowanie męskie</h3>
+        <span class="srv__meta">wycena indywidualna</span>
+        <span class="srv__price">cena w Booksy</span>
+        <a class="srv__cta" data-booksy href="#" aria-label="Sprawdź farbowanie w Booksy">Wybierz w Booksy</a>
+      </li>
+      <li class="srv__row" data-img="assets/service-women.jpg" data-slot="service-women">
+        <span class="srv__i">05</span>
+        <h3 class="srv__name">Usługi damskie</h3>
+        <span class="srv__meta">na zapytanie</span>
+        <span class="srv__price">cena w Booksy</span>
+        <a class="srv__cta" data-booksy href="#" aria-label="Sprawdź usługi damskie w Booksy">Wybierz w Booksy</a>
+      </li>
+    </ul>
+
+    <div class="srv__hover" id="srvHover" aria-hidden="true"><img alt="" src="" decoding="async"></div>
+
+    <p class="srv__note">Pełny cennik i dostępne terminy — po stronie Booksy.</p>
+  </div>
+</section>
+
+<!-- ============ 4. TEAM ============ -->
+<section class="team sec" id="team">
+  <div class="wrap">
+    <header class="sec__head sec__head--row">
+      <div>
+        <p class="sec__label">Zespół</p>
+        <h2 class="sec__title" data-split>Ludzie, którzy robią różnicę w detalu.</h2>
+      </div>
+      <div class="team__nav">
+        <button class="rnd" id="teamPrev" aria-label="Poprzedni barber">←</button>
+        <button class="rnd" id="teamNext" aria-label="Następny barber">→</button>
+      </div>
+    </header>
+  </div>
+
+  <div class="team__scroller" id="teamScroller" tabindex="0" aria-label="Lista barberów, przewiń w poziomie">
+    <article class="tcard">
+      <div class="slot slot--portrait" data-label="team-max">
+        <img src="assets/team-max.jpg" alt="Max Siwy — Senior Barber" loading="lazy" decoding="async">
+      </div>
+      <div class="tcard__body">
+        <h3 class="tcard__name">Max Siwy</h3>
+        <p class="tcard__role">Senior Barber</p>
+        <ul class="tags"><li>fade</li><li>klasyka</li><li>brzytwa</li></ul>
+        <p class="tcard__micro">Najczęściej rezerwowany. Opinie 4.9 ★</p>
+        <a class="btn btn--ghost btn--sm" data-booksy href="#">Umów do Maxa</a>
+      </div>
+    </article>
+
+    <article class="tcard">
+      <div class="slot slot--portrait" data-label="team-olga">
+        <img src="assets/team-olga.jpg" alt="Olga Wizard — Senior Barber" loading="lazy" decoding="async">
+      </div>
+      <div class="tcard__body">
+        <h3 class="tcard__name">Olga Wizard</h3>
+        <p class="tcard__role">Senior Barber</p>
+        <ul class="tags"><li>kolor</li><li>tekstura</li><li>damskie</li></ul>
+        <p class="tcard__micro">Mocna zmiana i kolor. Opinie 4.9 ★</p>
+        <a class="btn btn--ghost btn--sm" data-booksy href="#">Umów do Olgi</a>
+      </div>
+    </article>
+
+    <article class="tcard">
+      <div class="slot slot--portrait" data-label="team-walera">
+        <img src="assets/team-walera.jpg" alt="Walera — Barber" loading="lazy" decoding="async">
+      </div>
+      <div class="tcard__body">
+        <h3 class="tcard__name">Walera</h3>
+        <p class="tcard__role">Barber</p>
+        <ul class="tags"><li>broda</li><li>skin fade</li></ul>
+        <p class="tcard__micro">Ostra linia brody. Opinie 4.9 ★</p>
+        <a class="btn btn--ghost btn--sm" data-booksy href="#">Umów do Walery</a>
+      </div>
+    </article>
+
+    <article class="tcard">
+      <div class="slot slot--portrait" data-label="team-ilia">
+        <img src="assets/team-ilia.jpg" alt="Ilia — Junior Barber" loading="lazy" decoding="async">
+      </div>
+      <div class="tcard__body">
+        <h3 class="tcard__name">Ilia</h3>
+        <p class="tcard__role">Junior Barber</p>
+        <ul class="tags"><li>klasyka</li><li>maszynka</li></ul>
+        <p class="tcard__micro">Dobre terminy, świetny stosunek ceny do efektu.</p>
+        <a class="btn btn--ghost btn--sm" data-booksy href="#">Umów do Ilii</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 5. GALLERY ============ -->
+<section class="gallery sec" id="gallery">
+  <div class="wrap">
+    <header class="sec__head">
+      <p class="sec__label">Efekty</p>
+      <h2 class="sec__title" data-split>Efekt widać od razu.</h2>
+    </header>
+
+    <div class="ba" id="ba">
+      <div class="ba__pane ba__pane--after">
+        <div class="slot" data-label="ba-after">
+          <img src="assets/ba-after.jpg" alt="Po strzyżeniu — ostry fade i wyrzeźbiona broda" loading="lazy" decoding="async">
+        </div>
+        <span class="ba__badge">Po</span>
+      </div>
+      <div class="ba__pane ba__pane--before" id="baBefore">
+        <div class="slot" data-label="ba-before">
+          <img src="assets/ba-before.jpg" alt="Przed strzyżeniem — odrośnięte włosy" loading="lazy" decoding="async">
+        </div>
+        <span class="ba__badge ba__badge--l">Przed</span>
+      </div>
+      <div class="ba__handle" id="baHandle" aria-hidden="true"></div>
+      <label class="sr" for="baRange">Suwak przed / po</label>
+      <input class="ba__range" id="baRange" type="range" min="0" max="100" value="50" step="0.1">
+    </div>
+    <p class="ba__note">Przeciągnij suwak. Przykład poglądowy — do wymiany na waszą metamorfozę.</p>
+
+    <div class="grid" id="grid">
+      <figure class="gitem" data-type="Kontur">
+        <div class="slot" data-label="gallery-01"><img src="assets/gallery-01.jpg" alt="Kontur brzytwą" loading="lazy" decoding="async"></div>
+        <figcaption>Kontur</figcaption>
+      </figure>
+      <figure class="gitem gitem--tall" data-type="Fade">
+        <div class="slot" data-label="gallery-02"><img src="assets/gallery-02.jpg" alt="Fade i broda w profilu" loading="lazy" decoding="async"></div>
+        <figcaption>Fade</figcaption>
+      </figure>
+      <figure class="gitem" data-type="Broda">
+        <div class="slot" data-label="gallery-03"><img src="assets/gallery-03.jpg" alt="Broda w ciemnym świetle" loading="lazy" decoding="async"></div>
+        <figcaption>Broda</figcaption>
+      </figure>
+      <figure class="gitem gitem--tall" data-type="Wzór">
+        <div class="slot" data-label="gallery-04"><img src="assets/gallery-04.jpg" alt="Wzór wystrzyżony maszynką" loading="lazy" decoding="async"></div>
+        <figcaption>Wzór</figcaption>
+      </figure>
+      <figure class="gitem" data-type="Nożyce">
+        <div class="slot" data-label="gallery-05"><img src="assets/gallery-05.jpg" alt="Praca nożycami z grzebieniem" loading="lazy" decoding="async"></div>
+        <figcaption>Nożyce</figcaption>
+      </figure>
+      <figure class="gitem" data-type="Broda">
+        <div class="slot" data-label="gallery-06"><img src="assets/gallery-06.jpg" alt="Broda, kadr czarno-biały" loading="lazy" decoding="async"></div>
+        <figcaption>Broda</figcaption>
+      </figure>
+      <figure class="gitem gitem--tall" data-type="Maszynka">
+        <div class="slot" data-label="gallery-07"><img src="assets/gallery-07.jpg" alt="Maszynka na karku" loading="lazy" decoding="async"></div>
+        <figcaption>Maszynka</figcaption>
+      </figure>
+      <figure class="gitem" data-type="Narzędzia">
+        <div class="slot" data-label="gallery-08"><img src="assets/gallery-08.jpg" alt="Narzędzia barbera" loading="lazy" decoding="async"></div>
+        <figcaption>Narzędzia</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. REVIEWS ============ -->
+<section class="reviews sec" id="reviews">
+  <div class="wrap">
+    <div class="score">
+      <div class="score__num" data-count="4.9">4.9</div>
+      <div class="score__meta">
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <p>146 opinii na Booksy</p>
+        <a class="link" data-booksy href="#">Zobacz wszystkie opinie</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee" id="marquee">
+    <div class="marquee__row" id="marqueeRow">
+      <blockquote class="rcard"><p>„Najlepszy fade w Szczecinie. Zero pośpiechu, wszystko dopięte na ostatni milimetr.”</p><cite>Kamil W.</cite></blockquote>
+      <blockquote class="rcard"><p>„Best barber in town. Max knows exactly what to do with thick hair.”</p><cite>Daniel R.</cite></blockquote>
+      <blockquote class="rcard"><p>„Дуже класне місце, атмосфера топ, борода зроблена ідеально. Дякую!”</p><cite>Oleh K.</cite></blockquote>
+      <blockquote class="rcard"><p>„Olga zrobiła kolor lepiej niż w salonie za dwa razy większe pieniądze.”</p><cite>Marta S.</cite></blockquote>
+      <blockquote class="rcard"><p>„Punktualnie, czysto, konkretnie. Chodzę tu od roku i ani razu się nie zawiodłem.”</p><cite>Piotr J.</cite></blockquote>
+      <blockquote class="rcard"><p>„Great atmosphere, good music, and a proper beard trim. Highly recommend.”</p><cite>James T.</cite></blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. LOCATION ============ -->
+<section class="loc sec" id="contact">
+  <div class="wrap loc__grid">
+    <div class="loc__info">
+      <p class="sec__label">Lokalizacja</p>
+      <h2 class="sec__title sec__title--sm" data-split>Stare Miasto, Targ Rybny 4.</h2>
+      <p class="loc__addr">
+        Targ Rybny 4<br>70-535 Szczecin<br>
+        <span class="loc__hours">Codziennie 10:00–20:00 · wizyty tylko po rezerwacji</span>
+      </p>
+
+      <ul class="perks">
+        <li data-stagger>Parking w okolicy</li>
+        <li data-stagger>Wi-Fi</li>
+        <li data-stagger>Program lojalnościowy</li>
+        <li data-stagger>Pet friendly</li>
+      </ul>
+
+      <div class="loc__btns">
+        <a class="btn btn--amber" data-booksy href="#" data-stagger data-magnetic>Booksy</a>
+        <a class="btn btn--ghost" href="https://www.instagram.com/brozone.szczecin/" target="_blank" rel="noopener noreferrer" data-stagger>Instagram</a>
+        <a class="btn btn--ghost" data-phone href="#" data-stagger>Zadzwoń</a>
+        <a class="btn btn--ghost" href="https://www.google.com/maps/dir/?api=1&destination=Targ+Rybny+4,+70-535+Szczecin" target="_blank" rel="noopener noreferrer" data-stagger>Dojazd</a>
+      </div>
+    </div>
+
+    <div class="loc__map" data-tilt>
+      <!-- ASSET SLOT: map-embed — podmień na <iframe> Google Maps po akceptacji cookies -->
+      <div class="slot slot--map" data-label="location-visual">
+        <img src="assets/location-visual.jpg" alt="BroZone przy Targ Rybny 4 na Starym Mieście w Szczecinie" loading="lazy" decoding="async">
+      </div>
+      <a class="loc__pin" href="https://www.google.com/maps/search/?api=1&query=Targ+Rybny+4,+70-535+Szczecin" target="_blank" rel="noopener noreferrer">
+        <span class="loc__dot"></span> Targ Rybny 4, Szczecin
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. FINAL CTA ============ -->
+<section class="final" id="final">
+  <div class="final__media" data-parallax-media>
+    <div class="slot" data-label="final-cta-bg">
+      <img src="assets/final-cta-bg.jpg" alt="Fotel barberski i lustro w BroZone" loading="lazy" decoding="async">
+    </div>
+    <div class="final__scrim"></div>
+    <div class="grain" aria-hidden="true"></div>
+  </div>
+  <div class="final__content">
+    <p class="sec__label">Siadasz na fotel. Wychodzisz gotowy.</p>
+    <h2 class="final__h" data-split>Nowa fryzura zaczyna się od jednej rezerwacji.</h2>
+    <div class="final__actions">
+      <a class="btn btn--amber btn--lg" data-booksy href="#" data-magnetic>Umów wizytę na Booksy</a>
+      <a class="btn btn--ghost btn--lg" href="https://www.instagram.com/brozone.szczecin/" target="_blank" rel="noopener noreferrer">Zobacz Instagram</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <span class="foot__logo">BROZONE</span>
+      <p class="foot__p">Barber / Fryzjer Męski<br>Targ Rybny 4, 70-535 Szczecin</p>
+    </div>
+    <nav class="foot__links" aria-label="Stopka">
+      <a href="#services">Usługi</a>
+      <a href="#team">Zespół</a>
+      <a href="#gallery">Efekty</a>
+      <a href="#reviews">Opinie</a>
+      <a href="https://www.instagram.com/brozone.szczecin/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a data-booksy href="#">Booksy</a>
+    </nav>
+    <p class="foot__copy">
+      © <span id="year">2026</span> BroZone Szczecin. Rezerwacje obsługuje Booksy.<br>
+      <span class="foot__credit">
+        Zdjęcie Targ Rybny: <a href="https://commons.wikimedia.org/wiki/User:Szczecinolog" target="_blank" rel="noopener noreferrer">Szczecinolog</a>,
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>, via Wikimedia Commons.
+        Materiały tymczasowe (wideo i część zdjęć) — Mixkit Stock Video Free License.
+      </span>
+    </p>
+  </div>
+</footer>
+
+<!-- ============ MOBILE STICKY CTA ============ -->
+<div class="bottombar" id="bottombar">
+  <div class="bottombar__meta"><strong>4.9 ★</strong> · 146 opinii</div>
+  <a class="btn btn--amber btn--sm" data-booksy href="#">Umów wizytę</a>
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HairSalon",
+  "name": "BroZone",
+  "description": "Barber i fryzjer męski na Starym Mieście w Szczecinie.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Targ Rybny 4",
+    "postalCode": "70-535",
+    "addressLocality": "Szczecin",
+    "addressCountry": "PL"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "146"
+  },
+  "sameAs": ["https://www.instagram.com/brozone.szczecin/"],
+  "priceRange": "70–150 zł"
+}
+</script>
+
+<script src="js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,351 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   BROZONE design tokens
+   deep graphite · black · warm white · steel gray · brass accent · electric blue
+--------------------------------------------------------------------------- */
+
+:root {
+  --bg: #f4f2ee;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #eae7e1;
+  --panel: #ffffff;
+  --panel-muted: #f7f5f2;
+  --border: #e0dcd4;
+  --border-strong: #cbc5ba;
+  --fg: #14171a;
+  --fg-muted: #5d646c;
+  --fg-subtle: #8b939b;
+
+  --brass: #a9832f;
+  --brass-soft: #c8a55b;
+  --brass-glow: rgba(169, 131, 47, 0.22);
+  --electric: #1f6feb;
+  --electric-glow: rgba(31, 111, 235, 0.18);
+
+  --ok: #1f8f5f;
+  --warn: #b4790f;
+  --danger: #c2402f;
+  --info: #1f6feb;
+
+  --radius: 0.7rem;
+  --shadow-panel: 0 1px 2px rgba(20, 23, 26, 0.06), 0 8px 24px -12px rgba(20, 23, 26, 0.14);
+  --ring: rgba(169, 131, 47, 0.45);
+}
+
+.dark {
+  --bg: #08090a;
+  --bg-elevated: #101315;
+  --bg-sunken: #050506;
+  --panel: #0e1113;
+  --panel-muted: #14181b;
+  --border: #1e2428;
+  --border-strong: #2c343a;
+  --fg: #f2efe9;
+  --fg-muted: #98a1a9;
+  --fg-subtle: #6a747c;
+
+  --brass: #c8a55b;
+  --brass-soft: #e7ce96;
+  --brass-glow: rgba(200, 165, 91, 0.24);
+  --electric: #4cc2ff;
+  --electric-glow: rgba(76, 194, 255, 0.18);
+
+  --ok: #3ecf8e;
+  --warn: #e3b341;
+  --danger: #f0674f;
+  --info: #4cc2ff;
+
+  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 18px 40px -24px rgba(0, 0, 0, 0.9);
+  --ring: rgba(200, 165, 91, 0.45);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-sunken: var(--bg-sunken);
+  --color-panel: var(--panel);
+  --color-panel-muted: var(--panel-muted);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-brass: var(--brass);
+  --color-brass-soft: var(--brass-soft);
+  --color-electric: var(--electric);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  --radius-xs: 0.35rem;
+  --radius-sm: 0.5rem;
+  --radius-md: var(--radius);
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+  }
+
+  ::selection {
+    background: var(--brass);
+    color: #08090a;
+  }
+
+  /* dense, quiet scrollbars — dashboard feel */
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 99px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--fg-subtle);
+    background-clip: content-box;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  .glass {
+    background: color-mix(in oklab, var(--panel) 72%, transparent);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-panel);
+  }
+
+  .hairline {
+    box-shadow: inset 0 1px 0 color-mix(in oklab, white 6%, transparent);
+  }
+
+  .brass-text {
+    background: linear-gradient(180deg, var(--brass-soft), var(--brass));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .grid-lines {
+    background-image: linear-gradient(
+        to right,
+        color-mix(in oklab, var(--border) 70%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, color-mix(in oklab, var(--border) 70%, transparent) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  .noise::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .spotlight {
+    background: radial-gradient(
+      60% 55% at 50% 12%,
+      color-mix(in oklab, var(--brass) 22%, transparent) 0%,
+      transparent 70%
+    );
+  }
+
+  .focus-ring {
+    outline: none;
+  }
+  .focus-ring:focus-visible {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--ring);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+/* ---------------------- Radix state transitions --------------------------- */
+
+@keyframes bz-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes bz-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes bz-dialog-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.97);
+  }
+}
+@keyframes bz-dialog-out {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.98);
+  }
+}
+@keyframes bz-drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes bz-drawer-out {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes bz-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+}
+
+@layer utilities {
+  .anim-overlay[data-state="open"] {
+    animation: bz-fade-in 0.18s ease;
+  }
+  .anim-overlay[data-state="closed"] {
+    animation: bz-fade-out 0.15s ease forwards;
+  }
+  .anim-dialog[data-state="open"] {
+    animation: bz-dialog-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .anim-dialog[data-state="closed"] {
+    animation: bz-dialog-out 0.15s ease forwards;
+  }
+  .anim-drawer[data-state="open"] {
+    animation: bz-drawer-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .anim-drawer[data-state="closed"] {
+    animation: bz-drawer-out 0.22s ease forwards;
+  }
+  .anim-pop[data-state="open"] {
+    animation: bz-pop-in 0.16s ease;
+  }
+}
+
+@keyframes brozone-sheen {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+  }
+}
+
+@keyframes brozone-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 var(--brass-glow);
+  }
+  70% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@keyframes brozone-spin-slow {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes brozone-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes brozone-shimmer {
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-sheen {
+  animation: brozone-sheen 2.6s ease-in-out infinite;
+}
+.animate-pulse-ring {
+  animation: brozone-pulse-ring 2.4s ease-out infinite;
+}
+.animate-float {
+  animation: brozone-float 7s ease-in-out infinite;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--panel-muted) 0%,
+    color-mix(in oklab, var(--panel-muted) 60%, var(--border)) 50%,
+    var(--panel-muted) 100%
+  );
+  background-size: 200% 100%;
+  animation: brozone-shimmer 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

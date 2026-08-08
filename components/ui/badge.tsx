@@ -9,8 +9,8 @@ const badgeVariants = cva(
       tone: {
         neutral:
           "border-[var(--border-strong)] bg-[var(--panel-muted)] text-[var(--fg-muted)]",
-        brass:
-          "border-[color-mix(in_oklab,var(--brass)_40%,transparent)] bg-[color-mix(in_oklab,var(--brass)_14%,transparent)] text-[var(--brass)]",
+        accent:
+          "border-[color-mix(in_oklab,var(--accent)_40%,transparent)] bg-[color-mix(in_oklab,var(--accent)_14%,transparent)] text-[var(--accent)]",
         info: "border-[color-mix(in_oklab,var(--info)_40%,transparent)] bg-[color-mix(in_oklab,var(--info)_12%,transparent)] text-[var(--info)]",
         ok: "border-[color-mix(in_oklab,var(--ok)_40%,transparent)] bg-[color-mix(in_oklab,var(--ok)_12%,transparent)] text-[var(--ok)]",
         warn: "border-[color-mix(in_oklab,var(--warn)_40%,transparent)] bg-[color-mix(in_oklab,var(--warn)_12%,transparent)] text-[var(--warn)]",

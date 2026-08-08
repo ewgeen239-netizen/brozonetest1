@@ -47,7 +47,7 @@ export function GallerySection() {
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
               {t.gallery.eyebrow}
             </p>
             <h2 className="mt-2 text-[clamp(1.8rem,4vw,2.75rem)] font-bold leading-tight tracking-tight">

@@ -34,7 +34,7 @@ const KIND_META: Record<ShiftKind, { label: string; tone: string; icon?: React.E
   vacation: { label: "Urlop", tone: "var(--info)", icon: Plane },
   sick: { label: "L4", tone: "var(--danger)", icon: Stethoscope },
   off: { label: "Wolne", tone: "var(--fg-subtle)", icon: X },
-  training: { label: "Szkolenie", tone: "var(--brass)", icon: Coffee },
+  training: { label: "Szkolenie", tone: "var(--accent)", icon: Coffee },
 };
 
 export default function SchedulePage() {
@@ -136,7 +136,7 @@ export default function SchedulePage() {
                     key={d}
                     className={cn(
                       "border-l border-[var(--border)] px-3 py-2",
-                      d === today && "bg-[color-mix(in_oklab,var(--brass)_8%,transparent)]",
+                      d === today && "bg-[color-mix(in_oklab,var(--accent)_8%,transparent)]",
                     )}
                   >
                     <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--fg-subtle)]">
@@ -179,7 +179,7 @@ export default function SchedulePage() {
                         onClick={() => setEditing({ shift: s, barberName: b.name })}
                         className={cn(
                           "group border-l border-[var(--border)] px-2 py-2 text-left transition-colors hover:bg-[var(--panel-muted)]",
-                          d === today && "bg-[color-mix(in_oklab,var(--brass)_5%,transparent)]",
+                          d === today && "bg-[color-mix(in_oklab,var(--accent)_5%,transparent)]",
                         )}
                       >
                         {s.kind === "work" ? (
@@ -329,7 +329,7 @@ function ShiftEditor({
           <Button variant="ghost" size="sm" onClick={onClose}>
             Anuluj
           </Button>
-          <Button variant="brass" size="sm" onClick={() => onSave(draft)}>
+          <Button variant="accent" size="sm" onClick={() => onSave(draft)}>
             Zapisz zmianę
           </Button>
         </DialogFooter>

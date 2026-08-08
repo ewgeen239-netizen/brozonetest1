@@ -3,63 +3,73 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---------------------------------------------------------------------------
-   BROZONE design tokens
-   deep graphite · black · warm white · steel gray · brass accent · electric blue
+   BROZONE design tokens — KOD WIZUALNY
+   Dominujące : Bright White #F4F5F0 · Nebulosity #1C1C1B
+   Pomocnicze : #E7E5D9 (cream) · #263B28 (deep green) · #416643 (green)
+   Nigdy czysta biel ani czysta czerń.
 --------------------------------------------------------------------------- */
 
 :root {
-  --bg: #f4f2ee;
+  --brand-white: #f4f5f0;
+  --brand-black: #1c1c1b;
+  --brand-cream: #e7e5d9;
+  --brand-green-deep: #263b28;
+  --brand-green: #416643;
+  --brand-grey: #e2e3dd;
+
+  --bg: #f4f5f0;
   --bg-elevated: #ffffff;
-  --bg-sunken: #eae7e1;
+  --bg-sunken: #e7e5d9;
   --panel: #ffffff;
-  --panel-muted: #f7f5f2;
-  --border: #e0dcd4;
-  --border-strong: #cbc5ba;
-  --fg: #14171a;
-  --fg-muted: #5d646c;
-  --fg-subtle: #8b939b;
+  --panel-muted: #eeefe9;
+  --border: #dcddd4;
+  --border-strong: #c3c5ba;
+  --fg: #1c1c1b;
+  --fg-muted: #545650;
+  --fg-subtle: #82847b;
 
-  --brass: #a9832f;
-  --brass-soft: #c8a55b;
-  --brass-glow: rgba(169, 131, 47, 0.22);
-  --electric: #1f6feb;
-  --electric-glow: rgba(31, 111, 235, 0.18);
+  --accent: #416643;
+  --accent-soft: #263b28;
+  --accent-glow: rgba(65, 102, 67, 0.22);
+  --electric: #263b28;
+  --electric-glow: rgba(38, 59, 40, 0.18);
 
-  --ok: #1f8f5f;
-  --warn: #b4790f;
-  --danger: #c2402f;
-  --info: #1f6feb;
+  --ok: #416643;
+  --warn: #8a6d1f;
+  --danger: #a33a2c;
+  --info: #3f5f74;
 
   --radius: 0.7rem;
-  --shadow-panel: 0 1px 2px rgba(20, 23, 26, 0.06), 0 8px 24px -12px rgba(20, 23, 26, 0.14);
-  --ring: rgba(169, 131, 47, 0.45);
+  --shadow-panel: 0 1px 2px rgba(28, 28, 27, 0.06), 0 8px 24px -12px rgba(28, 28, 27, 0.16);
+  --ring: rgba(65, 102, 67, 0.45);
 }
 
 .dark {
-  --bg: #08090a;
-  --bg-elevated: #101315;
-  --bg-sunken: #050506;
-  --panel: #0e1113;
-  --panel-muted: #14181b;
-  --border: #1e2428;
-  --border-strong: #2c343a;
-  --fg: #f2efe9;
-  --fg-muted: #98a1a9;
-  --fg-subtle: #6a747c;
+  --bg: #1c1c1b;
+  --bg-elevated: #232322;
+  --bg-sunken: #141413;
+  --panel: #212120;
+  --panel-muted: #292929;
+  --border: #34342f;
+  --border-strong: #45453f;
+  --fg: #f4f5f0;
+  --fg-muted: #a6a89e;
+  --fg-subtle: #78796f;
 
-  --brass: #c8a55b;
-  --brass-soft: #e7ce96;
-  --brass-glow: rgba(200, 165, 91, 0.24);
-  --electric: #4cc2ff;
-  --electric-glow: rgba(76, 194, 255, 0.18);
+  /* brand green lifted for legibility on Nebulosity */
+  --accent: #6d9b70;
+  --accent-soft: #9dc59f;
+  --accent-glow: rgba(109, 155, 112, 0.26);
+  --electric: #8fbf92;
+  --electric-glow: rgba(143, 191, 146, 0.18);
 
-  --ok: #3ecf8e;
-  --warn: #e3b341;
-  --danger: #f0674f;
-  --info: #4cc2ff;
+  --ok: #6d9b70;
+  --warn: #d0aa5a;
+  --danger: #d9705d;
+  --info: #8aa9bd;
 
   --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 18px 40px -24px rgba(0, 0, 0, 0.9);
-  --ring: rgba(200, 165, 91, 0.45);
+  --ring: rgba(109, 155, 112, 0.45);
 }
 
 @theme inline {
@@ -73,8 +83,8 @@
   --color-fg: var(--fg);
   --color-fg-muted: var(--fg-muted);
   --color-fg-subtle: var(--fg-subtle);
-  --color-brass: var(--brass);
-  --color-brass-soft: var(--brass-soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
   --color-electric: var(--electric);
   --color-ok: var(--ok);
   --color-warn: var(--warn);
@@ -87,7 +97,10 @@
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* KOD WIZUALNY: Montserrat dla tekstu, Arial Bold dla tytułów */
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-display: Arial, "Helvetica Neue", Helvetica, var(--font-montserrat), sans-serif;
   --font-mono: var(--font-mono-jb), ui-monospace, "SF Mono", Menlo, monospace;
 }
 
@@ -105,12 +118,21 @@
     background-color: var(--bg);
     color: var(--fg);
     font-family: var(--font-sans);
-    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+  }
+
+  /* Arial Bold — tytuły i nagłówki */
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
   ::selection {
-    background: var(--brass);
-    color: #08090a;
+    background: var(--accent);
+    color: var(--brand-white);
   }
 
   /* dense, quiet scrollbars — dashboard feel */
@@ -159,8 +181,8 @@
     box-shadow: inset 0 1px 0 color-mix(in oklab, white 6%, transparent);
   }
 
-  .brass-text {
-    background: linear-gradient(180deg, var(--brass-soft), var(--brass));
+  .accent-text {
+    background: linear-gradient(180deg, var(--accent-soft), var(--accent));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -188,7 +210,7 @@
   .spotlight {
     background: radial-gradient(
       60% 55% at 50% 12%,
-      color-mix(in oklab, var(--brass) 22%, transparent) 0%,
+      color-mix(in oklab, var(--accent) 22%, transparent) 0%,
       transparent 70%
     );
   }
@@ -284,7 +306,7 @@
 
 @keyframes brozone-pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 var(--brass-glow);
+    box-shadow: 0 0 0 0 var(--accent-glow);
   }
   70% {
     box-shadow: 0 0 0 10px transparent;

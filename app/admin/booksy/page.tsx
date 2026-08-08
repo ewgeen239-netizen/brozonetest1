@@ -74,7 +74,7 @@ export default function BooksySyncPage() {
                 Profil Booksy <ExternalLink />
               </a>
             </Button>
-            <Button variant="brass" size="sm" onClick={() => runSync()} disabled={syncing}>
+            <Button variant="accent" size="sm" onClick={() => runSync()} disabled={syncing}>
               <RefreshCcw className={cn(syncing && "animate-spin")} /> Sync from Booksy
             </Button>
           </>
@@ -139,14 +139,14 @@ export default function BooksySyncPage() {
                 className={cn(
                   "flex flex-col rounded-lg border p-4 text-left transition-all",
                   active
-                    ? "border-[var(--brass)] bg-[color-mix(in_oklab,var(--brass)_8%,var(--panel))] shadow-[0_18px_40px_-28px_var(--brass-glow)]"
+                    ? "border-[var(--accent)] bg-[color-mix(in_oklab,var(--accent)_8%,var(--panel))] shadow-[0_18px_40px_-28px_var(--accent-glow)]"
                     : "border-[var(--border)] bg-[var(--panel)] hover:border-[var(--border-strong)]",
                 )}
               >
                 <div className="flex items-center gap-2">
                   <span className="text-[14px] font-semibold">{info.label}</span>
                   {active ? (
-                    <Badge tone="brass" size="sm">
+                    <Badge tone="accent" size="sm">
                       aktywny
                     </Badge>
                   ) : null}
@@ -330,7 +330,7 @@ export default function BooksySyncPage() {
                   Eksport z Booksy Biz → wgraj plik. Oczekiwane kolumny:{" "}
                   <span className="font-mono">booking_id;date;time;duration;price;note</span>
                 </p>
-                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-[var(--border-strong)] px-4 py-6 text-[12px] text-[var(--fg-muted)] transition-colors hover:border-[var(--brass)] hover:text-[var(--fg)]">
+                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-[var(--border-strong)] px-4 py-6 text-[12px] text-[var(--fg-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--fg)]">
                   <FileUp className="size-4" />
                   Wybierz plik CSV
                   <input
@@ -460,7 +460,7 @@ export default function BooksySyncPage() {
                         Zachowaj lokalną
                       </Button>
                       <Button
-                        variant="brass"
+                        variant="accent"
                         size="sm"
                         onClick={() => {
                           resolveConflict(a.id, "remote");

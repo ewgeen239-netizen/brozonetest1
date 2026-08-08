@@ -15,8 +15,11 @@ export const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // one shift
 
 const encoder = new TextEncoder();
 
-interface SessionPayload {
+export interface SessionPayload {
   sub: string;
+  email: string;
+  role: string;
+  staffId?: string;
   iat: number;
   exp: number;
 }
@@ -55,10 +58,19 @@ async function sign(data: string, secret: string) {
 
 /* -------------------------------- session --------------------------------- */
 
-export async function createSessionToken(secret: string, subject = "owner") {
+export async function createSessionToken(
+  secret: string,
+  identity: { email: string; role: string; staffId?: string } = {
+    email: "wlasciciel@brozone.pl",
+    role: "admin",
+  },
+) {
   const now = Date.now();
   const payload: SessionPayload = {
-    sub: subject,
+    sub: identity.email,
+    email: identity.email,
+    role: identity.role,
+    staffId: identity.staffId,
     iat: now,
     exp: now + SESSION_TTL_MS,
   };
@@ -93,6 +105,20 @@ export async function verifySessionToken(
     return typeof payload.exp === "number" && payload.exp > Date.now();
   } catch {
     return false;
+  }
+}
+
+/** Zwraca dane sesji tylko wtedy, gdy podpis i termin ważności się zgadzają. */
+export async function readSessionPayload(
+  token: string | undefined,
+  secret: string | undefined,
+): Promise<SessionPayload | null> {
+  if (!(await verifySessionToken(token, secret))) return null;
+  try {
+    const [body] = token!.split(".");
+    return JSON.parse(new TextDecoder().decode(fromBase64Url(body))) as SessionPayload;
+  } catch {
+    return null;
   }
 }
 

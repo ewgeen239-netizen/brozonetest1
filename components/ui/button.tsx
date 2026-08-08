@@ -11,16 +11,16 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[var(--fg)] text-[var(--bg)] hover:bg-[color-mix(in_oklab,var(--fg)_88%,var(--brass))]",
-        brass:
-          "bg-gradient-to-b from-[var(--brass-soft)] to-[var(--brass)] text-[#0b0c0d] font-semibold shadow-[0_6px_20px_-8px_var(--brass-glow)] hover:brightness-110",
+          "bg-[var(--fg)] text-[var(--bg)] hover:bg-[color-mix(in_oklab,var(--fg)_88%,var(--accent))]",
+        accent:
+          "bg-gradient-to-b from-[var(--accent-soft)] to-[var(--accent)] text-[#0b0c0d] font-semibold shadow-[0_6px_20px_-8px_var(--accent-glow)] hover:brightness-110",
         outline:
-          "border border-[var(--border-strong)] bg-transparent hover:bg-[var(--panel-muted)] hover:border-[var(--brass)]",
+          "border border-[var(--border-strong)] bg-transparent hover:bg-[var(--panel-muted)] hover:border-[var(--accent)]",
         ghost: "hover:bg-[var(--panel-muted)] text-[var(--fg-muted)] hover:text-[var(--fg)]",
         subtle: "bg-[var(--panel-muted)] text-[var(--fg)] hover:bg-[var(--bg-sunken)]",
         danger:
           "bg-[color-mix(in_oklab,var(--danger)_16%,transparent)] text-[var(--danger)] border border-[color-mix(in_oklab,var(--danger)_35%,transparent)] hover:bg-[color-mix(in_oklab,var(--danger)_26%,transparent)]",
-        link: "text-[var(--brass)] underline-offset-4 hover:underline",
+        link: "text-[var(--accent)] underline-offset-4 hover:underline",
       },
       size: {
         default: "h-9 px-3.5",

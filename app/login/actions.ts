@@ -9,6 +9,7 @@ import {
   passwordMatches,
   safeRedirect,
 } from "@/lib/auth";
+import { VIEW_AS_COOKIE } from "@/lib/booking/session";
 
 /* --------------------------- brute-force throttle -------------------------- */
 
@@ -73,13 +74,19 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
   attempts.delete(key);
 
   const store = await cookies();
-  store.set(SESSION_COOKIE, await createSessionToken(secret), {
+  const token = await createSessionToken(secret, {
+    email: process.env.OWNER_EMAIL?.toLowerCase() ?? "wlasciciel@brozone.pl",
+    role: "admin",
+  });
+  store.set(SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: SESSION_TTL_MS / 1000,
   });
+  // świeże logowanie zawsze zaczyna od widoku właściciela
+  store.delete(VIEW_AS_COOKIE);
 
   redirect(next);
 }
@@ -87,5 +94,6 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
 export async function logout() {
   const store = await cookies();
   store.delete(SESSION_COOKIE);
+  store.delete(VIEW_AS_COOKIE);
   redirect("/login");
 }

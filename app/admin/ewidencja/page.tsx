@@ -87,7 +87,7 @@ export default function TimeEvidencePage() {
         actions={
           <>
             <ExportButtons filename={`ewidencja-${month}`} rows={exportRows} />
-            <Button variant="brass" size="sm" onClick={approveAll} disabled={!pending}>
+            <Button variant="accent" size="sm" onClick={approveAll} disabled={!pending}>
               <ShieldCheck /> Zatwierdź wszystkie ({pending})
             </Button>
           </>
@@ -241,7 +241,7 @@ export default function TimeEvidencePage() {
                               "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] transition-colors",
                               t.approved
                                 ? "border-[color-mix(in_oklab,var(--ok)_40%,transparent)] bg-[color-mix(in_oklab,var(--ok)_12%,transparent)] text-[var(--ok)]"
-                                : "border-[var(--border-strong)] text-[var(--fg-muted)] hover:border-[var(--brass)]",
+                                : "border-[var(--border-strong)] text-[var(--fg-muted)] hover:border-[var(--accent)]",
                             )}
                           >
                             {t.approved ? <Check className="size-3" /> : null}

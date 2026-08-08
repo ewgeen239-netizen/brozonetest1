@@ -54,7 +54,7 @@ export function AnimatedNumber({
 
 export function Sparkline({
   data,
-  color = "var(--brass)",
+  color = "var(--accent)",
   className,
   height = 32,
   fill = true,
@@ -114,7 +114,7 @@ export function Sparkline({
 export function MiniBars({
   data,
   labels,
-  color = "var(--brass)",
+  color = "var(--accent)",
   height = 96,
   valueFormat = (v: number) => numberFormat(v),
 }: {

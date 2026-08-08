@@ -1,100 +1,55 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams } from "next/navigation";
-import { Mail, Phone, Search, Users } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Check, Loader2, Mail, Phone, Plus, Search, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input, NativeSelect } from "@/components/ui/input";
-import { Avatar, Separator } from "@/components/ui/misc";
-import { Table, TBody, THead, TableWrap } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Field, Input, Textarea } from "@/components/ui/input";
 import { Drawer } from "@/components/ui/dialog";
-import { EmptyState, TableSkeleton } from "@/components/ui/states";
 import {
-  ExportButtons,
-  FilterBar,
-  KpiCard,
-  PageBody,
-  PageHeader,
-  StatusBadge,
-} from "@/components/admin/shared";
-import { useStore } from "@/lib/store";
-import type { Client, ClientTier } from "@/lib/types";
-import { formatDatePL, plnFormat, sum } from "@/lib/utils";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { EmptyState, TableSkeleton } from "@/components/ui/states";
+import { Separator } from "@/components/ui/misc";
+import { FilterBar, PageBody, PageHeader } from "@/components/admin/shared";
+import { CategoryBar, StatusPill } from "@/components/admin/universal/badges";
+import type { Client } from "@/lib/booking/types";
+import { formatDateShort, saveClient, useBookings, useClients } from "@/lib/booking/use-api";
 
-const TIER_TONE: Record<ClientTier, "brass" | "info" | "neutral" | "danger"> = {
-  vip: "brass",
-  regular: "info",
-  new: "neutral",
-  risk: "danger",
-};
-
-const TIER_LABEL: Record<ClientTier, string> = {
-  vip: "VIP",
-  regular: "Stały",
-  new: "Nowy",
-  risk: "Ryzyko",
-};
+/* --------------------------------------------------------------------------
+   Jedna baza klientów dla trzech kategorii. Historia pokazuje wizyty
+   ze wszystkich usług — to główna wartość wspólnej bazy.
+-------------------------------------------------------------------------- */
 
 export default function ClientsPage() {
-  return (
-    <React.Suspense fallback={<div className="p-6 text-[13px] text-[var(--fg-muted)]">Wczytywanie…</div>}>
-      <ClientsView />
-    </React.Suspense>
-  );
-}
-
-function ClientsView() {
-  const params = useSearchParams();
-  const { clients, appointments, barbers, services } = useStore();
-  const [query, setQuery] = React.useState(params.get("q") ?? "");
-  const [tier, setTier] = React.useState<string>("all");
-  const [sort, setSort] = React.useState<"visits" | "spent" | "recent" | "name">("spent");
+  const [query, setQuery] = React.useState("");
   const [selected, setSelected] = React.useState<Client | null>(null);
-  const [loading, setLoading] = React.useState(true);
+  const [creating, setCreating] = React.useState(false);
 
-  React.useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 380);
-    return () => clearTimeout(t);
-  }, []);
+  const { data, loading, error, reload } = useClients(query);
+  const clients = data ?? [];
 
-  const filtered = React.useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const list = clients.filter((c) => {
-      if (tier !== "all" && c.tier !== tier) return false;
-      return !q || c.name.toLowerCase().includes(q) || c.phone.includes(q) || c.email?.includes(q);
-    });
-    return list.sort((a, b) => {
-      if (sort === "visits") return b.visits - a.visits;
-      if (sort === "spent") return b.totalSpent - a.totalSpent;
-      if (sort === "name") return a.name.localeCompare(b.name, "pl");
-      return (b.lastVisitAt ?? "").localeCompare(a.lastVisitAt ?? "");
-    });
-  }, [clients, query, tier, sort]);
-
-  const vip = clients.filter((c) => c.tier === "vip").length;
-  const risk = clients.filter((c) => c.tier === "risk").length;
-  const ltv = clients.length ? sum(clients, (c) => c.totalSpent) / clients.length : 0;
-
-  const exportRows = filtered.map((c) => ({
-    Imie_nazwisko: c.name,
-    Telefon: c.phone,
-    Email: c.email ?? "",
-    Wizyty: c.visits,
-    No_show: c.noShows,
-    Wydane_PLN: c.totalSpent,
-    Ostatnia_wizyta: c.lastVisitAt ?? "",
-    Segment: TIER_LABEL[c.tier],
-    Zgoda_marketing: c.marketingConsent ? "TAK" : "NIE",
-  }));
+  const sorted = React.useMemo(
+    () => [...clients].sort((a, b) => (b.lastVisit ?? "").localeCompare(a.lastVisit ?? "")),
+    [clients],
+  );
 
   return (
     <>
       <PageHeader
         title="Klienci"
         en="Clients"
-        description="Baza klientów zbudowana z rezerwacji Booksy, strony i wizyt walk-in."
-        actions={<ExportButtons filename="klienci-brozone" rows={exportRows} />}
+        description="Wspólna baza dla barbera, tatuażu i masażu."
+        actions={
+          <Button variant="accent" size="sm" onClick={() => setCreating(true)}>
+            <Plus /> Dodaj klienta
+          </Button>
+        }
       >
         <FilterBar>
           <div className="relative">
@@ -102,182 +57,301 @@ function ClientsView() {
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Nazwisko, telefon, e-mail…"
-              className="h-8 w-64 pl-8 text-[12px]"
+              placeholder="Szukaj po nazwisku albo telefonie…"
+              className="h-9 w-72 rounded-full pl-8 text-[12px]"
             />
           </div>
-          <NativeSelect
-            value={tier}
-            onChange={(e) => setTier(e.target.value)}
-            className="h-8 w-36 text-[12px]"
-          >
-            <option value="all">Wszystkie segmenty</option>
-            <option value="vip">VIP</option>
-            <option value="regular">Stali</option>
-            <option value="new">Nowi</option>
-            <option value="risk">Ryzyko no-show</option>
-          </NativeSelect>
-          <NativeSelect
-            value={sort}
-            onChange={(e) => setSort(e.target.value as typeof sort)}
-            className="h-8 w-40 text-[12px]"
-          >
-            <option value="spent">Sortuj: wydatki</option>
-            <option value="visits">Sortuj: wizyty</option>
-            <option value="recent">Sortuj: ostatnia wizyta</option>
-            <option value="name">Sortuj: nazwisko</option>
-          </NativeSelect>
-          <span className="ml-auto text-[11px] text-[var(--fg-subtle)]">{filtered.length} klientów</span>
+          <span className="ml-auto flex items-center gap-2 text-[11px] text-[var(--fg-subtle)]">
+            {loading ? <Loader2 className="size-3 animate-spin" /> : null}
+            {sorted.length} klientów
+          </span>
         </FilterBar>
       </PageHeader>
 
       <PageBody>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <KpiCard label="Baza klientów" en="Total" value={clients.length} index={0} />
-          <KpiCard label="Klienci VIP" en="VIP" value={vip} color="var(--brass)" index={1} />
-          <KpiCard label="Ryzyko no-show" en="At risk" value={risk} color="var(--danger)" index={2} />
-          <KpiCard label="Średnia wartość klienta" en="LTV" value={ltv} format="pln" color="var(--ok)" index={3} />
-        </div>
-
         <div className="overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--panel)]">
-          {loading ? (
-            <TableSkeleton rows={8} cols={7} />
-          ) : filtered.length === 0 ? (
+          {loading && !data ? (
+            <TableSkeleton rows={8} cols={5} />
+          ) : error ? (
             <EmptyState
-              icon={Users}
-              title="Brak klientów spełniających kryteria"
-              description="Zmień filtr segmentu albo wyczyść wyszukiwanie."
+              title="Nie udało się wczytać klientów"
+              description={error}
               action={
-                <Button variant="outline" size="sm" onClick={() => { setQuery(""); setTier("all"); }}>
-                  Wyczyść filtry
+                <Button variant="outline" size="sm" onClick={reload}>
+                  Spróbuj ponownie
                 </Button>
               }
             />
+          ) : sorted.length === 0 ? (
+            <EmptyState
+              icon={Users}
+              title={query ? `Nie znaleziono nikogo dla „${query}".` : "Nie masz jeszcze klientów."}
+              description={
+                query
+                  ? "Sprawdź pisownię albo poszukaj po numerze telefonu."
+                  : "Pojawią się tu automatycznie po pierwszej rezerwacji ze strony."
+              }
+              action={
+                query ? (
+                  <Button variant="outline" size="sm" onClick={() => setQuery("")}>
+                    Wyczyść wyszukiwanie
+                  </Button>
+                ) : (
+                  <Button variant="accent" size="sm" onClick={() => setCreating(true)}>
+                    <Plus /> Dodaj klienta ręcznie
+                  </Button>
+                )
+              }
+            />
           ) : (
-            <TableWrap className="max-h-[calc(100dvh-22rem)] overflow-y-auto">
-              <Table>
-                <THead>
-                  <tr>
-                    <th>Klient</th>
-                    <th>Kontakt</th>
-                    <th className="text-right">Wizyty</th>
-                    <th className="text-right">No-show</th>
-                    <th className="text-right">Wydane</th>
-                    <th>Ostatnia wizyta</th>
-                    <th>Segment</th>
-                  </tr>
-                </THead>
-                <TBody>
-                  {filtered.slice(0, 60).map((c) => (
-                    <tr key={c.id} className="cursor-pointer" onClick={() => setSelected(c)}>
-                      <td>
-                        <span className="flex items-center gap-2">
-                          <Avatar name={c.name} className="size-7" />
-                          <span className="font-medium">{c.name}</span>
-                        </span>
-                      </td>
-                      <td className="text-[var(--fg-muted)]">
-                        <span className="block tabular">{c.phone}</span>
-                        {c.email ? (
-                          <span className="block text-[11px] text-[var(--fg-subtle)]">{c.email}</span>
-                        ) : null}
-                      </td>
-                      <td className="text-right tabular">{c.visits}</td>
-                      <td className="text-right tabular">
-                        {c.noShows ? (
-                          <span className="text-[var(--danger)]">{c.noShows}</span>
-                        ) : (
-                          <span className="text-[var(--fg-subtle)]">0</span>
-                        )}
-                      </td>
-                      <td className="text-right tabular font-medium">
-                        {plnFormat(c.totalSpent, { compact: true })}
-                      </td>
-                      <td className="tabular text-[var(--fg-muted)]">
-                        {c.lastVisitAt ? formatDatePL(c.lastVisitAt) : "—"}
-                      </td>
-                      <td>
-                        <Badge tone={TIER_TONE[c.tier]} size="sm">
-                          {TIER_LABEL[c.tier]}
+            <ul className="divide-y divide-[var(--border)]">
+              {sorted.map((client) => (
+                <li key={client.clientId}>
+                  <button
+                    onClick={() => setSelected(client)}
+                    className="flex w-full flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3 text-left transition-colors hover:bg-[var(--panel-muted)]"
+                  >
+                    <span className="min-w-[10rem] flex-1">
+                      <span className="block truncate text-[13px] font-medium">{client.name}</span>
+                      <span className="block truncate text-[11px] tabular text-[var(--fg-subtle)]">
+                        {client.phone}
+                      </span>
+                    </span>
+
+                    <span className="flex shrink-0 flex-wrap gap-1">
+                      {client.tags.slice(0, 3).map((tag) => (
+                        <Badge key={tag} tone={tag === "VIP" ? "accent" : "outline"} size="sm">
+                          {tag}
                         </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </TBody>
-              </Table>
-            </TableWrap>
+                      ))}
+                    </span>
+
+                    <span className="w-24 shrink-0 text-right text-[12px] tabular text-[var(--fg-muted)]">
+                      {client.totalVisits} wizyt
+                    </span>
+                    <span className="w-24 shrink-0 text-right text-[12px] tabular text-[var(--fg-subtle)]">
+                      {client.lastVisit ? formatDateShort(client.lastVisit) : "—"}
+                    </span>
+                    {client.noShows > 0 ? (
+                      <Badge tone="danger" size="sm">
+                        {client.noShows} nieobecności
+                      </Badge>
+                    ) : null}
+                  </button>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       </PageBody>
 
-      <Drawer
-        open={Boolean(selected)}
+      <ClientDrawer
+        client={selected}
         onOpenChange={(v) => !v && setSelected(null)}
-        title={selected?.name ?? ""}
-        description={selected ? `Klient od ${formatDatePL(selected.createdAt)}` : undefined}
-      >
-        {selected ? (
-          <div className="space-y-5 p-5">
-            <div className="flex flex-wrap gap-1.5">
-              <Badge tone={TIER_TONE[selected.tier]}>{TIER_LABEL[selected.tier]}</Badge>
-              <Badge tone="outline">{selected.visits} wizyt</Badge>
-              <Badge tone="outline">{plnFormat(selected.totalSpent, { compact: true })}</Badge>
-              {selected.marketingConsent ? <Badge tone="ok">zgoda marketing</Badge> : null}
-            </div>
-
-            <div className="space-y-1.5 text-[12px]">
-              <a href={`tel:${selected.phone}`} className="flex items-center gap-2 text-[var(--fg-muted)] hover:text-[var(--brass)]">
-                <Phone className="size-3.5" /> {selected.phone}
-              </a>
-              {selected.email ? (
-                <a href={`mailto:${selected.email}`} className="flex items-center gap-2 text-[var(--fg-muted)] hover:text-[var(--brass)]">
-                  <Mail className="size-3.5" /> {selected.email}
-                </a>
-              ) : null}
-            </div>
-
-            {selected.notes ? (
-              <div className="rounded-lg border border-[var(--border)] bg-[var(--panel-muted)] p-3 text-[12px] text-[var(--fg-muted)]">
-                {selected.notes}
-              </div>
-            ) : null}
-
-            <Separator />
-
-            <div>
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--fg-subtle)]">
-                Historia wizyt
-              </p>
-              {(() => {
-                const history = appointments
-                  .filter((a) => a.clientId === selected.id)
-                  .sort((a, b) => (a.date < b.date ? 1 : -1))
-                  .slice(0, 12);
-                if (!history.length)
-                  return <EmptyState title="Brak wizyt w systemie" className="py-8" />;
-                return (
-                  <div className="divide-y divide-[var(--border)] rounded-lg border border-[var(--border)]">
-                    {history.map((a) => (
-                      <div key={a.id} className="flex items-center gap-2 px-3 py-2 text-[12px]">
-                        <span className="w-20 shrink-0 tabular text-[var(--fg-muted)]">
-                          {formatDatePL(a.date)}
-                        </span>
-                        <span className="min-w-0 flex-1 truncate">
-                          {a.serviceIds.map((id) => services.find((s) => s.id === id)?.name).join(" + ")}
-                        </span>
-                        <span className="hidden shrink-0 text-[11px] text-[var(--fg-subtle)] sm:block">
-                          {barbers.find((b) => b.id === a.barberId)?.name}
-                        </span>
-                        <StatusBadge status={a.status} />
-                      </div>
-                    ))}
-                  </div>
-                );
-              })()}
-            </div>
-          </div>
-        ) : null}
-      </Drawer>
+        onSaved={reload}
+      />
+      <NewClientDialog open={creating} onOpenChange={setCreating} onSaved={reload} />
     </>
+  );
+}
+
+function ClientDrawer({
+  client,
+  onOpenChange,
+  onSaved,
+}: {
+  client: Client | null;
+  onOpenChange: (v: boolean) => void;
+  onSaved: () => void;
+}) {
+  const [note, setNote] = React.useState("");
+  const [saving, setSaving] = React.useState(false);
+  const history = useBookings({});
+
+  React.useEffect(() => setNote(client?.notes ?? ""), [client?.clientId, client?.notes]);
+
+  if (!client) return null;
+
+  const visits = (history.data ?? [])
+    .filter((b) => b.clientId === client.clientId)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 12);
+
+  return (
+    <Drawer
+      open
+      onOpenChange={onOpenChange}
+      title={client.name}
+      description={`Klient od ${formatDateShort(client.createdAt.slice(0, 10))}`}
+    >
+      <div className="space-y-5 p-5">
+        <div className="flex flex-wrap gap-1.5">
+          {client.tags.map((tag) => (
+            <Badge key={tag} tone={tag === "VIP" ? "accent" : "outline"}>
+              {tag}
+            </Badge>
+          ))}
+          <Badge tone="outline">{client.totalVisits} wizyt</Badge>
+          {client.noShows > 0 ? (
+            <Badge tone="danger">{client.noShows} nieobecności</Badge>
+          ) : null}
+        </div>
+
+        <div className="space-y-1.5 text-[12px]">
+          <a
+            href={`tel:${client.phone}`}
+            className="flex items-center gap-2 text-[var(--fg-muted)] hover:text-[var(--accent)]"
+          >
+            <Phone className="size-3.5" /> {client.phone}
+          </a>
+          {client.email ? (
+            <a
+              href={`mailto:${client.email}`}
+              className="flex items-center gap-2 text-[var(--fg-muted)] hover:text-[var(--accent)]"
+            >
+              <Mail className="size-3.5" /> {client.email}
+            </a>
+          ) : null}
+        </div>
+
+        <Separator />
+
+        <div>
+          <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--fg-subtle)]">
+            Historia wizyt
+          </h3>
+          {history.loading ? (
+            <p className="text-[12px] text-[var(--fg-muted)]">Wczytywanie…</p>
+          ) : visits.length ? (
+            <ul className="divide-y divide-[var(--border)] rounded-lg border border-[var(--border)]">
+              {visits.map((b) => (
+                <li key={b.bookingId} className="relative">
+                  <CategoryBar category={b.category} />
+                  <div className="flex items-center gap-2 py-2 pl-4 pr-3 text-[12px]">
+                    <span className="w-14 shrink-0 tabular text-[var(--fg-muted)]">
+                      {formatDateShort(b.date)}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">{b.serviceName}</span>
+                    <StatusPill status={b.status} size="sm" />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <EmptyState title="Ten klient nie ma jeszcze żadnych wizyt." className="py-8" />
+          )}
+        </div>
+
+        <Field label="Notatka wewnętrzna">
+          <Textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Preferencje, uwagi, ustalenia…"
+          />
+          <Button
+            variant="subtle"
+            size="sm"
+            className="mt-2"
+            disabled={saving || note === (client.notes ?? "")}
+            onClick={async () => {
+              setSaving(true);
+              try {
+                await saveClient({ phone: client.phone, notes: note });
+                onSaved();
+              } finally {
+                setSaving(false);
+              }
+            }}
+          >
+            {saving ? <Loader2 className="animate-spin" /> : <Check />} Zapisz notatkę
+          </Button>
+        </Field>
+
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--panel-muted)] p-3 text-[11px] text-[var(--fg-muted)]">
+          Zgoda RODO: {client.consentRodo ? "tak" : "nie"} · Marketing:{" "}
+          {client.consentMarketing ? "tak" : "nie"}
+        </div>
+      </div>
+    </Drawer>
+  );
+}
+
+function NewClientDialog({
+  open,
+  onOpenChange,
+  onSaved,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  onSaved: () => void;
+}) {
+  const [name, setName] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [saving, setSaving] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (open) {
+      setName("");
+      setPhone("");
+      setEmail("");
+      setError(null);
+    }
+  }, [open]);
+
+  const submit = async () => {
+    if (!name.trim()) return setError("Wpisz imię i nazwisko.");
+    if (phone.replace(/\D/g, "").length < 9) {
+      return setError("Numer wygląda na niepełny — potrzebujemy 9 cyfr.");
+    }
+    setSaving(true);
+    setError(null);
+    try {
+      await saveClient({ name, phone, email: email || undefined, consentRodo: true });
+      onSaved();
+      onOpenChange(false);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="w-[min(94vw,30rem)]">
+        <DialogHeader>
+          <DialogTitle>Dodaj klienta</DialogTitle>
+          <DialogDescription>Telefon jest wymagany — po nim rozpoznajemy klienta.</DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-3 p-5">
+          <Field label="Imię i nazwisko">
+            <Input value={name} onChange={(e) => setName(e.target.value)} />
+          </Field>
+          <Field label="Telefon">
+            <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="600 100 200" />
+          </Field>
+          <Field label="E-mail" hint="Opcjonalnie">
+            <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+          </Field>
+          {error ? (
+            <p className="rounded-md border border-[color-mix(in_oklab,var(--danger)_35%,transparent)] bg-[color-mix(in_oklab,var(--danger)_10%,transparent)] px-3 py-2 text-[12px] text-[var(--danger)]">
+              {error}
+            </p>
+          ) : null}
+        </div>
+
+        <DialogFooter>
+          <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+            Wróć
+          </Button>
+          <Button variant="accent" size="sm" onClick={submit} disabled={saving}>
+            {saving ? <Loader2 className="animate-spin" /> : <Check />} Zapisz
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

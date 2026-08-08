@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { LoginForm } from "./login-form";
 import { SESSION_COOKIE, safeRedirect, verifySessionToken } from "@/lib/auth";
 import { SALON } from "@/lib/mock-data";
+import { googleConfigured } from "@/lib/auth-google";
 
 export const metadata: Metadata = {
   title: "Logowanie",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; error?: string }>;
+  searchParams: Promise<{ next?: string; error?: string; email?: string }>;
 }) {
   const params = await searchParams;
   const next = safeRedirect(params.next);
@@ -31,7 +32,7 @@ export default async function LoginPage({
 
       <div className="relative w-full max-w-sm">
         <div className="mb-6 flex flex-col items-center text-center">
-          <span className="relative grid size-11 place-items-center overflow-hidden rounded-[10px] bg-gradient-to-b from-[var(--brass-soft)] to-[var(--brass)] text-lg font-black text-[#0b0c0d]">
+          <span className="relative grid size-11 place-items-center overflow-hidden rounded-[10px] bg-gradient-to-b from-[var(--accent-soft)] to-[var(--accent)] text-lg font-black text-[#0b0c0d]">
             B
             <span className="animate-sheen absolute inset-y-0 -left-1/3 w-1/3 bg-white/40 blur-[6px]" />
           </span>
@@ -49,12 +50,17 @@ export default async function LoginPage({
             </p>
           </div>
 
-          <LoginForm next={next} configError={params.error === "config"} />
+          <LoginForm
+            next={next}
+            errorCode={params.error}
+            errorEmail={params.email}
+            googleEnabled={googleConfigured()}
+          />
         </div>
 
         <Link
           href="/"
-          className="mt-5 flex items-center justify-center gap-1.5 text-[12px] text-[#6a747c] transition-colors hover:text-[var(--brass)]"
+          className="mt-5 flex items-center justify-center gap-1.5 text-[12px] text-[#6a747c] transition-colors hover:text-[var(--accent)]"
         >
           <ArrowLeft className="size-3.5" /> Wróć na stronę klienta
         </Link>

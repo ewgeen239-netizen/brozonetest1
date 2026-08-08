@@ -7,11 +7,11 @@ import { ArrowUpRight, ChevronDown, Clock, Mail, MapPin, Phone, Quote, Star } fr
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RazorDivider } from "./chrome-mark";
+import { BrozoneSymbol, BrozoneWordmark } from "./brand-mark";
 import { SALON, salonAddress } from "@/lib/mock-data";
 import { useStore } from "@/lib/store";
 import { useLang } from "@/lib/i18n";
-import { priceForBarber, servicesForBarber } from "@/lib/pricing";
-import type { Barber, Service } from "@/lib/types";
+import { CATEGORY_COLOR, CATEGORY_LABEL, priceLabel, type Category, type Service, type Staff } from "@/lib/booking/types";
 import { cn, durationLabel, initials, plnFormat } from "@/lib/utils";
 
 const reveal = {
@@ -31,7 +31,7 @@ function SectionHead({
   return (
     <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
           {eyebrow}
         </p>
         <h2 className="mt-2 text-[clamp(1.8rem,4vw,2.75rem)] font-bold leading-tight tracking-tight">
@@ -45,10 +45,39 @@ function SectionHead({
 
 /* ------------------------------- services -------------------------------- */
 
+/** wspólne pobranie katalogu z publicznego API */
+function useCatalog() {
+  const [services, setServices] = React.useState<Service[]>([]);
+  const [staff, setStaff] = React.useState<Staff[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    let alive = true;
+    Promise.all([
+      fetch("/api/public/services").then((r) => r.json()),
+      fetch("/api/public/staff").then((r) => r.json()),
+    ])
+      .then(([s, p]) => {
+        if (!alive) return;
+        setServices(s.ok ? s.data : []);
+        setStaff(p.ok ? p.data : []);
+      })
+      .catch(() => undefined)
+      .finally(() => alive && setLoading(false));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  return { services, staff, loading };
+}
+
+const CATEGORY_ORDER: Category[] = ["barber", "tattoo", "massage"];
+
 export function ServicesSection() {
   const { t } = useLang();
-  const { services, barbers } = useStore();
-  const crew = barbers.filter((b) => b.status === "active");
+  const { services, loading } = useCatalog();
+  const [open, setOpen] = React.useState<Category | null>(null);
 
   return (
     <section id="uslugi" className="relative py-16 sm:py-24">
@@ -63,150 +92,103 @@ export function ServicesSection() {
           }
         />
 
-        <div className="grid gap-3 lg:grid-cols-2">
-          {crew.map((barber, i) => (
-            <BarberPriceCard key={barber.id} barber={barber} services={services} index={i} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid gap-3 lg:grid-cols-3">
+            {CATEGORY_ORDER.map((c) => (
+              <div key={c} className="h-64 animate-pulse rounded-xl bg-[var(--panel-muted)]" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-3 lg:grid-cols-3">
+            {CATEGORY_ORDER.map((category, i) => {
+              const list = services
+                .filter((s) => s.category === category)
+                .sort((a, b) => a.priceFrom - b.priceFrom);
+              if (!list.length) return null;
+
+              const visible = open === category ? list : list.slice(0, 3);
+              const hidden = list.length - visible.length;
+              const color = CATEGORY_COLOR[category];
+
+              return (
+                <motion.article
+                  key={category}
+                  variants={reveal}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ delay: i * 0.06 }}
+                  className="relative overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--panel)]"
+                >
+                  <span
+                    className="absolute inset-x-0 top-0 h-0.5"
+                    style={{ background: color }}
+                  />
+                  <header className="border-b border-[var(--border)] p-4">
+                    <h3 className="text-[16px] font-bold tracking-tight">
+                      {CATEGORY_LABEL[category]}
+                    </h3>
+                    <p className="mt-0.5 text-[12px] text-[var(--fg-muted)]">
+                      {list.length} {t.services.servicesCount}
+                    </p>
+                  </header>
+
+                  <ul className="divide-y divide-[var(--border)]">
+                    {visible.map((service) => (
+                      <li
+                        key={service.serviceId}
+                        className="flex items-start gap-3 px-4 py-3 transition-colors hover:bg-[var(--panel-muted)]"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-[13px] font-medium">{service.name}</div>
+                          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[11px] text-[var(--fg-subtle)]">
+                            <span className="flex items-center gap-1">
+                              <Clock className="size-3" /> {service.durationMinutes} min
+                            </span>
+                            {service.depositRequired > 0 ? (
+                              <span>· zadatek {service.depositRequired} zł</span>
+                            ) : null}
+                          </div>
+                        </div>
+                        <div
+                          className="shrink-0 whitespace-nowrap text-[15px] font-bold tabular"
+                          style={{ color }}
+                        >
+                          {priceLabel(service)}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {hidden > 0 || open === category ? (
+                    <button
+                      onClick={() => setOpen(open === category ? null : category)}
+                      className="flex w-full items-center justify-center gap-1.5 border-t border-[var(--border)] bg-[var(--panel-muted)] px-4 py-2.5 text-[12px] font-medium text-[var(--fg-muted)] transition-colors hover:text-[var(--accent)]"
+                    >
+                      {open === category ? t.services.less : `${t.services.more} (${hidden})`}
+                      <motion.span
+                        animate={{ rotate: open === category ? 180 : 0 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        <ChevronDown className="size-4" />
+                      </motion.span>
+                    </button>
+                  ) : null}
+                </motion.article>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-/** price list of one barber: two headline services, the rest behind an arrow */
-function BarberPriceCard({
-  barber,
-  services,
-  index,
-}: {
-  barber: Barber;
-  services: Service[];
-  index: number;
-}) {
-  const { t } = useLang();
-  const [open, setOpen] = React.useState(false);
-  const mine = servicesForBarber(services, barber);
-  const visible = mine.slice(0, 2);
-  const hidden = mine.slice(2);
-
-  return (
-    <motion.article
-      variants={reveal}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ delay: index * 0.06 }}
-      className="group relative overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--panel)] transition-colors hover:border-[color-mix(in_oklab,var(--brass)_35%,transparent)]"
-    >
-      <div
-        className="absolute inset-x-0 top-0 h-px"
-        style={{ background: `linear-gradient(90deg, transparent, ${barber.color}, transparent)` }}
-      />
-
-      <header className="flex items-center gap-3 border-b border-[var(--border)] p-4">
-        <span
-          className="grid size-10 shrink-0 place-items-center rounded-lg text-[13px] font-black"
-          style={{
-            background: `color-mix(in oklab, ${barber.color} 18%, var(--panel-muted))`,
-            color: `color-mix(in oklab, ${barber.color} 85%, white)`,
-          }}
-        >
-          {initials(barber.name)}
-        </span>
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate text-[15px] font-semibold tracking-tight">{barber.name}</h3>
-          <p className="truncate text-[12px] text-[var(--fg-muted)]">{barber.specialization}</p>
-        </div>
-        <span className="shrink-0 text-[11px] tabular text-[var(--fg-subtle)]">
-          {mine.length} {t.services.servicesCount}
-        </span>
-      </header>
-
-      <ul className="divide-y divide-[var(--border)]">
-        {visible.map((s) => (
-          <ServiceRow key={s.id} service={s} barber={barber} highlight />
-        ))}
-      </ul>
-
-      <AnimatePresence initial={false}>
-        {open ? (
-          <motion.ul
-            key="rest"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-            className="divide-y divide-[var(--border)] overflow-hidden border-t border-[var(--border)]"
-          >
-            {hidden.map((s) => (
-              <ServiceRow key={s.id} service={s} barber={barber} />
-            ))}
-          </motion.ul>
-        ) : null}
-      </AnimatePresence>
-
-      {hidden.length ? (
-        <button
-          onClick={() => setOpen((o) => !o)}
-          aria-expanded={open}
-          className="flex w-full items-center justify-center gap-1.5 border-t border-[var(--border)] bg-[var(--panel-muted)] px-4 py-2.5 text-[12px] font-medium text-[var(--fg-muted)] transition-colors hover:text-[var(--brass)]"
-        >
-          {open ? t.services.less : `${t.services.more} (${hidden.length})`}
-          <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.25 }}>
-            <ChevronDown className="size-4" />
-          </motion.span>
-        </button>
-      ) : null}
-    </motion.article>
-  );
-}
-
-function ServiceRow({
-  service,
-  barber,
-  highlight,
-}: {
-  service: Service;
-  barber: Barber;
-  highlight?: boolean;
-}) {
-  const { t } = useLang();
-  const { price, durationMin, exact } = priceForBarber(service, barber);
-
-  return (
-    <li className="flex items-start gap-3 px-4 py-3 transition-colors hover:bg-[var(--panel-muted)]">
-      <div className="min-w-0 flex-1">
-        <div className={cn("truncate text-[13px]", highlight ? "font-semibold" : "font-medium")}>
-          {service.name}
-        </div>
-        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-[var(--fg-subtle)]">
-          <span className="flex items-center gap-1">
-            <Clock className="size-3" /> {durationLabel(durationMin)}
-          </span>
-          <span>· {service.nameEn}</span>
-          {highlight && service.popularity > 85 ? (
-            <Badge tone="brass" size="sm">
-              {t.services.popular}
-            </Badge>
-          ) : null}
-        </div>
-      </div>
-      <div className="shrink-0 whitespace-nowrap text-right">
-        <div className="text-[15px] font-bold tabular text-[var(--brass)]">
-          {exact ? "" : `${t.services.from} `}
-          {plnFormat(price, { compact: true })}
-        </div>
-      </div>
-    </li>
-  );
-}
-
-/* -------------------------------- barbers -------------------------------- */
+/* -------------------------------- zespół --------------------------------- */
 
 export function BarbersSection() {
   const { t } = useLang();
-  const { barbers } = useStore();
-  const list = barbers.filter((b) => b.status === "active");
+  const { staff, loading } = useCatalog();
 
   return (
     <section id="barberzy" className="relative overflow-hidden py-16 sm:py-24">
@@ -216,71 +198,78 @@ export function BarbersSection() {
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <SectionHead eyebrow={t.barbers.eyebrow} title={t.barbers.title} />
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {list.map((b, i) => (
-            <motion.div
-              key={b.id}
-              variants={reveal}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ delay: i * 0.06 }}
-              className="group relative overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--panel)]"
-            >
-              <div className="relative aspect-[4/5] overflow-hidden bg-[var(--bg-sunken)]">
-                {b.photoUrl ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
-                    src={b.photoUrl}
-                    alt={b.name}
-                    className="size-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0"
-                    loading="lazy"
-                  />
-                ) : (
-                  /* Booksy nie publikuje zdjęć zespołu — monogram zamiast pustego kadru */
+        {loading ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-64 animate-pulse rounded-xl bg-[var(--panel-muted)]" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {staff.map((person, i) => (
+              <motion.div
+                key={person.staffId}
+                variants={reveal}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.06 }}
+                className="group relative overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--panel)]"
+              >
+                <div className="relative aspect-[4/5] overflow-hidden bg-[var(--bg-sunken)]">
+                  {person.photoUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={person.photoUrl}
+                      alt={person.name}
+                      loading="lazy"
+                      className="size-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0"
+                    />
+                  ) : (
+                    <div
+                      className="grid size-full place-items-center transition-transform duration-700 group-hover:scale-105"
+                      style={{
+                        background: `radial-gradient(120% 120% at 30% 20%, color-mix(in oklab, ${person.calendarColor} 26%, var(--bg-sunken)), var(--bg-sunken))`,
+                      }}
+                    >
+                      <span
+                        className="text-[clamp(2.5rem,7vw,3.5rem)] font-black tracking-tight"
+                        style={{ color: `color-mix(in oklab, ${person.calendarColor} 85%, white)` }}
+                      >
+                        {initials(person.name)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--panel)] via-transparent to-transparent" />
                   <div
-                    className="grid size-full place-items-center transition-transform duration-700 group-hover:scale-105"
+                    className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
+                    style={{ background: person.calendarColor }}
+                  />
+                </div>
+
+                <div className="p-4">
+                  <h3 className="text-[15px] font-semibold tracking-tight">{person.name}</h3>
+                  <p className="mt-0.5 text-[12px] text-[var(--fg-muted)]">
+                    {person.category === "tattoo"
+                      ? `Tatuaż · ${person.style}`
+                      : person.category === "massage"
+                        ? `Masaż · ${person.specialization}`
+                        : `Barber · ${person.specialization}`}
+                  </p>
+                  <span
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px]"
                     style={{
-                      background: `radial-gradient(120% 120% at 30% 20%, color-mix(in oklab, ${b.color} 26%, var(--bg-sunken)), var(--bg-sunken))`,
+                      borderColor: `color-mix(in oklab, ${person.calendarColor} 45%, transparent)`,
+                      color: person.calendarColor,
                     }}
                   >
-                    <span
-                      className="text-[clamp(2.5rem,7vw,3.5rem)] font-black tracking-tight"
-                      style={{ color: `color-mix(in oklab, ${b.color} 85%, white)` }}
-                    >
-                      {initials(b.name)}
-                    </span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--panel)] via-transparent to-transparent" />
-                <div
-                  className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
-                  style={{ background: b.color }}
-                />
-              </div>
-              <div className="p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-[15px] font-semibold tracking-tight">{b.name}</h3>
-                  <span className="flex items-center gap-1 text-[12px] tabular text-[var(--fg-muted)]">
-                    <Star className="size-3 fill-[var(--brass)] text-[var(--brass)]" />
-                    {b.rating}
+                    {CATEGORY_LABEL[person.category]}
                   </span>
                 </div>
-                <p className="mt-0.5 text-[12px] text-[var(--fg-muted)]">{b.specialization}</p>
-                {b.booksyProfileUrl ? (
-                  <a
-                    href={b.booksyProfileUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-3 inline-flex items-center gap-1 text-[12px] text-[var(--brass)] hover:underline"
-                  >
-                    {t.barbers.profile} <ArrowUpRight className="size-3" />
-                  </a>
-                ) : null}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
@@ -313,8 +302,8 @@ export function ReviewsSection() {
           viewport={{ once: true, margin: "-60px" }}
           className="grid gap-3 md:grid-cols-[1fr_1.4fr]"
         >
-          <div className="flex flex-col items-center justify-center rounded-xl border border-[color-mix(in_oklab,var(--brass)_35%,transparent)] bg-[color-mix(in_oklab,var(--brass)_7%,var(--panel))] px-6 py-8 text-center">
-            <div className="text-[clamp(3rem,8vw,4.5rem)] font-black leading-none brass-text">
+          <div className="flex flex-col items-center justify-center rounded-xl border border-[color-mix(in_oklab,var(--accent)_35%,transparent)] bg-[color-mix(in_oklab,var(--accent)_7%,var(--panel))] px-6 py-8 text-center">
+            <div className="text-[clamp(3rem,8vw,4.5rem)] font-black leading-none accent-text">
               {SALON.rating.toFixed(1)}
             </div>
             <div className="mt-2 flex gap-1">
@@ -324,7 +313,7 @@ export function ReviewsSection() {
                   className={cn(
                     "size-4",
                     i < stars
-                      ? "fill-[var(--brass)] text-[var(--brass)]"
+                      ? "fill-[var(--accent)] text-[var(--accent)]"
                       : "text-[var(--border-strong)]",
                   )}
                 />
@@ -358,7 +347,7 @@ function FactTile({
 }) {
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--panel)] p-4">
-      <Icon className="size-4 text-[var(--brass)]" />
+      <Icon className="size-4 text-[var(--accent)]" />
       <h3 className="mt-3 text-[13px] font-semibold">{title}</h3>
       <p className="mt-1 text-[12px] leading-relaxed text-[var(--fg-muted)]">{body}</p>
     </div>
@@ -383,7 +372,7 @@ export function ContactSection() {
               <InfoRow icon={Phone} label={t.contact.phone}>
                 <a
                   href={`tel:${SALON.phone.replace(/\s/g, "")}`}
-                  className="hover:text-[var(--brass)]"
+                  className="hover:text-[var(--accent)]"
                 >
                   {SALON.phone}
                 </a>
@@ -391,7 +380,7 @@ export function ContactSection() {
             ) : null}
             {SALON.email ? (
               <InfoRow icon={Mail} label={t.contact.email}>
-                <a href={`mailto:${SALON.email}`} className="hover:text-[var(--brass)]">
+                <a href={`mailto:${SALON.email}`} className="hover:text-[var(--accent)]">
                   {SALON.email}
                 </a>
               </InfoRow>
@@ -422,7 +411,7 @@ export function ContactSection() {
               <span className="text-[12px] font-medium">
                 {SALON.name} — {salonAddress}
               </span>
-              <Button asChild size="xs" variant="brass">
+              <Button asChild size="xs" variant="accent">
                 <a href={SALON.mapsUrl} target="_blank" rel="noreferrer">
                   {t.contact.navigate} <ArrowUpRight />
                 </a>
@@ -446,7 +435,7 @@ function InfoRow({
 }) {
   return (
     <div className="flex gap-3 rounded-xl border border-[var(--border)] bg-[var(--panel)] p-4">
-      <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-[var(--border)] bg-[var(--panel-muted)] text-[var(--brass)]">
+      <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-[var(--border)] bg-[var(--panel-muted)] text-[var(--accent)]">
         <Icon className="size-4" />
       </span>
       <div className="min-w-0 flex-1">
@@ -468,10 +457,8 @@ export function SiteFooter() {
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 sm:px-6 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="grid size-7 place-items-center rounded-[6px] bg-gradient-to-b from-[var(--brass-soft)] to-[var(--brass)] text-[12px] font-black text-[#0b0c0d]">
-              B
-            </span>
-            <span className="text-[14px] font-bold tracking-[0.22em]">BROZONE</span>
+            <BrozoneSymbol className="h-5 w-auto" />
+            <BrozoneWordmark className="h-3.5 w-auto" />
           </div>
           <p className="mt-3 max-w-sm text-[12px] leading-relaxed text-[var(--fg-subtle)]">
             {SALON.tagline} · {SALON.company}.{SALON.nip ? ` NIP ${SALON.nip}.` : ""}{" "}

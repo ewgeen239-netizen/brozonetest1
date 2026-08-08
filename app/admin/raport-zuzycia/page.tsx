@@ -31,7 +31,7 @@ const CATEGORY_LABEL: Record<ProductCategory, string> = {
   cleaning: "Dezynfekcja",
 };
 
-const PALETTE = ["var(--brass)", "var(--info)", "#9d7bff", "var(--ok)", "var(--warn)", "var(--danger)"];
+const PALETTE = ["var(--accent)", "var(--info)", "#9d7bff", "var(--ok)", "var(--warn)", "var(--danger)"];
 
 export default function ProductUsagePage() {
   const { productUsage, barbers, services, today, removeUsageEntry } = useStore();
@@ -81,7 +81,7 @@ export default function ProductUsagePage() {
         actions={
           <>
             <ExportButtons filename={`zuzycie-${from}_${today}`} rows={exportRows} />
-            <Button variant="brass" size="sm" onClick={() => setAdding(true)}>
+            <Button variant="accent" size="sm" onClick={() => setAdding(true)}>
               <Plus /> Dodaj wpis
             </Button>
           </>
@@ -140,7 +140,7 @@ export default function ProductUsagePage() {
             label="Kategorie"
             en="Categories"
             value={byCategory.length}
-            color="var(--brass)"
+            color="var(--accent)"
             index={3}
           />
         </div>
@@ -222,7 +222,7 @@ export default function ProductUsagePage() {
                 title="Brak wpisów w wybranym okresie"
                 description="Dodaj zużycie ręcznie lub zmień zakres dat."
                 action={
-                  <Button variant="brass" size="sm" onClick={() => setAdding(true)}>
+                  <Button variant="accent" size="sm" onClick={() => setAdding(true)}>
                     <Plus /> Dodaj wpis
                   </Button>
                 }
@@ -441,7 +441,7 @@ function UsageDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
           <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
             Anuluj
           </Button>
-          <Button variant="brass" size="sm" onClick={submit}>
+          <Button variant="accent" size="sm" onClick={submit}>
             <Check /> Dodaj
           </Button>
         </DialogFooter>

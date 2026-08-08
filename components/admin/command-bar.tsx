@@ -81,7 +81,7 @@ export function CommandBar({ open, onOpenChange }: { open: boolean; onOpenChange
         label: b.name,
         hint: b.specialization,
         group: "Barberzy",
-        href: `/admin/barberzy/${b.id}`,
+        href: "/admin/pracownicy",
         icon: UserSquare2,
       }));
 
@@ -201,7 +201,7 @@ export function CommandBar({ open, onOpenChange }: { open: boolean; onOpenChange
                           {r.hint}
                         </span>
                         {i === active ? (
-                          <CornerDownLeft className="size-3 shrink-0 text-[var(--brass)]" />
+                          <CornerDownLeft className="size-3 shrink-0 text-[var(--accent)]" />
                         ) : null}
                       </button>
                     </motion.div>

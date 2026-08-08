@@ -5,7 +5,7 @@ import * as LabelPrimitive from "@radix-ui/react-label";
 import { cn } from "@/lib/utils";
 
 const fieldBase =
-  "w-full rounded-md border border-[var(--border-strong)] bg-[var(--panel-muted)] px-3 text-sm text-[var(--fg)] placeholder:text-[var(--fg-subtle)] transition-colors focus-ring focus-visible:border-[var(--brass)] disabled:opacity-50";
+  "w-full rounded-md border border-[var(--border-strong)] bg-[var(--panel-muted)] px-3 text-sm text-[var(--fg)] placeholder:text-[var(--fg-subtle)] transition-colors focus-ring focus-visible:border-[var(--accent)] disabled:opacity-50";
 
 export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
   ({ className, ...props }, ref) => (

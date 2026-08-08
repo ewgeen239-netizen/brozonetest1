@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth";
+import { SESSION_COOKIE, readSessionPayload } from "@/lib/auth";
 
 /**
  * Gate for BROZONE OS. Runs before every /admin request; an unsigned, expired
@@ -18,7 +18,17 @@ export async function middleware(request: NextRequest) {
   }
 
   const token = request.cookies.get(SESSION_COOKIE)?.value;
-  if (await verifySessionToken(token, secret)) {
+  const payload = await readSessionPayload(token, secret);
+  if (payload) {
+    // pracownik ma jeden ekran — resztę panelu ma po prostu niedostępną
+    const staffRole = ["barber", "tattoo", "massage"].includes(payload.role);
+    const viewAs = request.cookies.get("brozone_viewas")?.value;
+    const effectiveStaff = staffRole || ["barber", "tattoo", "massage"].includes(viewAs ?? "");
+
+    if (effectiveStaff && !request.nextUrl.pathname.startsWith("/admin/moje-wizyty")) {
+      return NextResponse.redirect(new URL("/admin/moje-wizyty", request.url));
+    }
+
     const response = NextResponse.next();
     // the admin panel must never be cached by a shared proxy
     response.headers.set("Cache-Control", "no-store, must-revalidate");

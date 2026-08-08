@@ -4,12 +4,16 @@ import * as React from "react";
 import { Sidebar } from "@/components/admin/sidebar";
 import { Topbar } from "@/components/admin/topbar";
 import { CommandBar } from "@/components/admin/command-bar";
+import { useMe } from "@/lib/booking/use-api";
 import { cn } from "@/lib/utils";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [commandOpen, setCommandOpen] = React.useState(false);
+  const { data: me } = useMe();
+  // pracownik ma jeden ekran — menu i wyszukiwarka tylko by go rozpraszały
+  const staffOnly = me ? me.sections.length === 1 && me.sections[0] === "moje-wizyty" : false;
 
   React.useEffect(() => {
     const stored = localStorage.getItem("brozone-sidebar");
@@ -33,6 +37,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       return !c;
     });
   };
+
+  if (staffOnly) {
+    return (
+      <div className="min-h-dvh bg-[var(--bg)]">
+        <Topbar minimal onOpenCommand={() => {}} onOpenSidebar={() => {}} />
+        <main>{children}</main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-dvh bg-[var(--bg)]">

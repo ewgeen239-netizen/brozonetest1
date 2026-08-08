@@ -6,6 +6,7 @@ import { ArrowDown, MapPin, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Particles } from "./particles";
 import { ChromeMark } from "./chrome-mark";
+import { BrozoneWordmark } from "./brand-mark";
 import { SALON, salonAddress } from "@/lib/mock-data";
 import { useLang } from "@/lib/i18n";
 
@@ -64,11 +65,11 @@ export function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="show"
-            className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--brass)_35%,transparent)] bg-[color-mix(in_oklab,var(--brass)_10%,transparent)] px-3 py-1 text-[11px] font-medium tracking-[0.14em] text-[var(--brass-soft)]"
+            className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--accent)_35%,transparent)] bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] px-3 py-1 text-[11px] font-medium tracking-[0.14em] text-[var(--accent-soft)]"
           >
             <span className="relative flex size-1.5">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-[var(--brass)] opacity-75" />
-              <span className="relative inline-flex size-1.5 rounded-full bg-[var(--brass)]" />
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
+              <span className="relative inline-flex size-1.5 rounded-full bg-[var(--accent)]" />
             </span>
             {t.hero.badge}
           </motion.div>
@@ -78,10 +79,14 @@ export function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="show"
-            className="relative mt-6 text-[clamp(3.4rem,13vw,9rem)] font-black leading-[0.86] tracking-[-0.03em] text-[#f5f1ea]"
+            className="relative mt-6"
           >
+            <span className="sr-only">BROZONE</span>
             <span className="relative inline-block overflow-hidden">
-              BROZONE
+              <BrozoneWordmark
+                variant="white"
+                className="w-[min(92vw,34rem)] lg:w-[min(46vw,38rem)]"
+              />
               <span className="animate-sheen pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
             </span>
           </motion.h1>
@@ -104,7 +109,7 @@ export function Hero() {
             animate="show"
             className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center"
           >
-            <Button asChild variant="brass" size="lg" className="animate-pulse-ring h-12 px-7 text-[15px]">
+            <Button asChild variant="accent" size="lg" className="animate-pulse-ring h-12 px-7 text-[15px]">
               <a href="#rezerwacja">{t.hero.cta}</a>
             </Button>
             <Button
@@ -148,7 +153,7 @@ export function Hero() {
 
       <a
         href="#rezerwacja"
-        className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1.5 text-[10px] uppercase tracking-[0.28em] text-[#767d84] transition-colors hover:text-[var(--brass)]"
+        className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1.5 text-[10px] uppercase tracking-[0.28em] text-[#767d84] transition-colors hover:text-[var(--accent)]"
       >
         {t.hero.scroll}
         <ArrowDown className="size-3.5 animate-bounce" />
@@ -161,7 +166,7 @@ function Stat({ value, label, icon }: { value: string; label: string; icon?: boo
   return (
     <div>
       <div className="flex items-center gap-1.5 text-2xl font-bold tracking-tight text-[#f5f1ea]">
-        {icon ? <Star className="size-4 fill-[var(--brass)] text-[var(--brass)]" /> : null}
+        {icon ? <Star className="size-4 fill-[var(--accent)] text-[var(--accent)]" /> : null}
         {value}
       </div>
       <div className="mt-0.5 text-[11px] tracking-wide">{label}</div>

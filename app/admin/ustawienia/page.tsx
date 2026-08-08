@@ -58,7 +58,7 @@ export default function SettingsPage() {
             <Card className="max-w-3xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Building2 className="size-3.5 text-[var(--brass)]" /> Dane salonu
+                  <Building2 className="size-3.5 text-[var(--accent)]" /> Dane salonu
                 </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-3 sm:grid-cols-2">
@@ -82,7 +82,7 @@ export default function SettingsPage() {
                 </Field>
                 <div className="sm:col-span-2">
                   <Button
-                    variant="brass"
+                    variant="accent"
                     size="sm"
                     onClick={() => toast({ title: "Dane salonu zapisane", tone: "ok" })}
                   >
@@ -97,7 +97,7 @@ export default function SettingsPage() {
             <Card className="max-w-3xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <ShieldCheck className="size-3.5 text-[var(--brass)]" /> Powiadomienia
+                  <ShieldCheck className="size-3.5 text-[var(--accent)]" /> Powiadomienia
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-1">
@@ -133,7 +133,7 @@ export default function SettingsPage() {
             <Card className="max-w-3xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Receipt className="size-3.5 text-[var(--brass)]" /> Parametry księgowe
+                  <Receipt className="size-3.5 text-[var(--accent)]" /> Parametry księgowe
                 </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-3 sm:grid-cols-2">
@@ -175,7 +175,7 @@ export default function SettingsPage() {
                     <Badge tone="outline">Zestawienie prowizji</Badge>
                   </div>
                   <Button
-                    variant="brass"
+                    variant="accent"
                     size="sm"
                     onClick={() => toast({ title: "Ustawienia księgowe zapisane", tone: "ok" })}
                   >
@@ -190,7 +190,7 @@ export default function SettingsPage() {
             <Card className="max-w-3xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Palette className="size-3.5 text-[var(--brass)]" /> Wygląd panelu
+                  <Palette className="size-3.5 text-[var(--accent)]" /> Wygląd panelu
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">

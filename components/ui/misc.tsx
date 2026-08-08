@@ -56,7 +56,7 @@ export const Switch = React.forwardRef<
     ref={ref}
     className={cn(
       "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border border-[var(--border-strong)] transition-colors focus-ring",
-      "data-[state=checked]:border-[var(--brass)] data-[state=checked]:bg-[var(--brass)] data-[state=unchecked]:bg-[var(--panel-muted)]",
+      "data-[state=checked]:border-[var(--accent)] data-[state=checked]:bg-[var(--accent)] data-[state=unchecked]:bg-[var(--panel-muted)]",
       className,
     )}
     {...props}
@@ -234,7 +234,7 @@ export function Progress({
         className="h-full rounded-full transition-[width] duration-700 ease-out"
         style={{
           width: `${Math.max(0, Math.min(100, value))}%`,
-          background: color ?? "var(--brass)",
+          background: color ?? "var(--accent)",
         }}
       />
     </div>

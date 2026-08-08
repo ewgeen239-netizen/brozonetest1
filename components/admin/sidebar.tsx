@@ -9,6 +9,7 @@ import { NAV_GROUPS, NAV_ITEMS } from "./nav-config";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/ui/misc";
 import { useStore } from "@/lib/store";
+import { useMe } from "@/lib/booking/use-api";
 
 export function Sidebar({
   collapsed,
@@ -23,6 +24,7 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
   const { appointments, today, booksy } = useStore();
+  const { data: me } = useMe();
 
   const pendingConflicts = appointments.filter((a) => a.conflict && !a.conflict.resolved).length;
   const todayCount = appointments.filter(
@@ -53,7 +55,7 @@ export function Sidebar({
       >
         {/* brand */}
         <div className="flex h-14 items-center gap-2.5 border-b border-[var(--border)] px-3">
-          <Link href="/" className="group relative grid size-8 shrink-0 place-items-center overflow-hidden rounded-[7px] bg-gradient-to-b from-[var(--brass-soft)] to-[var(--brass)] text-[13px] font-black text-[#0b0c0d]">
+          <Link href="/" className="group relative grid size-8 shrink-0 place-items-center overflow-hidden rounded-[7px] bg-gradient-to-b from-[var(--accent-soft)] to-[var(--accent)] text-[13px] font-black text-[#0b0c0d]">
             B
             <span className="absolute inset-0 -translate-x-full bg-white/40 blur-[6px] transition-transform duration-700 group-hover:translate-x-full" />
           </Link>
@@ -79,7 +81,10 @@ export function Sidebar({
         {/* nav */}
         <nav className="no-scrollbar flex-1 space-y-4 overflow-y-auto px-2 py-3">
           {NAV_GROUPS.map((group) => {
-            const items = NAV_ITEMS.filter((i) => i.group === group.key);
+            // menu pokazuje tylko to, na co rola i tak ma prawo po stronie serwera
+            const items = NAV_ITEMS.filter(
+              (i) => i.group === group.key && (!me || me.sections.includes(i.section)),
+            );
             if (!items.length) return null;
             return (
               <div key={group.key}>
@@ -110,14 +115,14 @@ export function Sidebar({
                         {active && (
                           <motion.span
                             layoutId="nav-active"
-                            className="absolute inset-0 -z-10 rounded-md border border-[color-mix(in_oklab,var(--brass)_30%,transparent)] bg-[color-mix(in_oklab,var(--brass)_10%,transparent)]"
+                            className="absolute inset-0 -z-10 rounded-md border border-[color-mix(in_oklab,var(--accent)_30%,transparent)] bg-[color-mix(in_oklab,var(--accent)_10%,transparent)]"
                             transition={{ type: "spring", stiffness: 420, damping: 34 }}
                           />
                         )}
                         <item.icon
                           className={cn(
                             "size-4 shrink-0",
-                            active ? "text-[var(--brass)]" : "text-[var(--fg-subtle)]",
+                            active ? "text-[var(--accent)]" : "text-[var(--fg-subtle)]",
                           )}
                         />
                         {!collapsed && <span className="truncate">{item.label}</span>}
@@ -180,7 +185,7 @@ export function Sidebar({
               </div>
               <Link
                 href="/"
-                className="mt-2 flex items-center gap-1 text-[11px] text-[var(--fg-subtle)] transition-colors hover:text-[var(--brass)]"
+                className="mt-2 flex items-center gap-1 text-[11px] text-[var(--fg-subtle)] transition-colors hover:text-[var(--accent)]"
               >
                 Strona klienta <ExternalLink className="size-3" />
               </Link>

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Montserrat, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider, THEME_INIT_SCRIPT } from "@/components/theme-provider";
 import { StoreProvider } from "@/lib/store";
@@ -7,9 +7,10 @@ import { LanguageProvider } from "@/lib/i18n";
 import { TooltipProvider } from "@/components/ui/misc";
 import { Toaster } from "@/components/toaster";
 
-const inter = Inter({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-inter",
+/** KOD WIZUALNY: Montserrat dla całego tekstu (nagłówki idą na Arial Bold) */
+const montserrat = Montserrat({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -38,14 +39,14 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#08090a" },
-    { media: "(prefers-color-scheme: light)", color: "#f4f2ee" },
+    { media: "(prefers-color-scheme: dark)", color: "#1c1c1b" },
+    { media: "(prefers-color-scheme: light)", color: "#f4f5f0" },
   ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pl" className={`dark ${inter.variable} ${jetbrains.variable}`} suppressHydrationWarning>
+    <html lang="pl" className={`dark ${montserrat.variable} ${jetbrains.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>

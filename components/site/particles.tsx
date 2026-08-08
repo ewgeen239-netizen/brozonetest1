@@ -3,7 +3,7 @@
 import * as React from "react";
 
 /**
- * Lightweight canvas dust field — brass motes drifting through the hero
+ * Lightweight canvas dust field — accent motes drifting through the hero
  * spotlight. Pauses when off-screen and honours prefers-reduced-motion.
  */
 export function Particles({

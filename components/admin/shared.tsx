@@ -62,7 +62,7 @@ export function KpiCard({
   format = "number",
   delta,
   spark,
-  color = "var(--brass)",
+  color = "var(--accent)",
   suffix,
   fractionDigits = 0,
   hint,
@@ -171,7 +171,7 @@ export const SOURCE_LABEL: Record<AppointmentSource, string> = {
 };
 
 const SOURCE_TONE = {
-  booksy: "brass",
+  booksy: "accent",
   website: "info",
   manual: "neutral",
   walkin: "warn",

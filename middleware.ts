@@ -1,5 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { SESSION_COOKIE, readSessionPayload } from "@/lib/auth";
+// Relative, not the "@/" alias: the Edge bundler for middleware resolves this
+// file before tsconfig paths are applied, and an aliased import gets shipped
+// unresolved ("Edge Function is referencing unsupported modules").
+import { SESSION_COOKIE, readSessionPayload } from "./lib/auth";
 
 /**
  * Gate for BROZONE OS. Runs before every /admin request; an unsigned, expired
